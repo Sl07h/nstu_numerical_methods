@@ -137,7 +137,7 @@ int matrix::decomposeChol() {
 }
 
 
-// Calculating computetional error		A - L*L'
+// Calculating computational error		A - L*L'
 vector <vector <real>> matrix::calcCompErrorForL() {
 
 	vector <vector <real>> error;
@@ -147,7 +147,7 @@ vector <vector <real>> matrix::calcCompErrorForL() {
 }
 
 
-// Calculating computetional error		F - L*y
+// Calculating computational error		F - L*y
 vector <real> matrix::calcCompErrorFory() {
 
 	vector <real> error;
@@ -157,7 +157,7 @@ vector <real> matrix::calcCompErrorFory() {
 }
 
 
-// Calculating computetional error		y - L'*x
+// Calculating computational error		y - L'*x
 vector <real> matrix::calcCompErrorForx() {
 
 	vector <real> error;
