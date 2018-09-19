@@ -1,7 +1,7 @@
 #include "matrix.h"
 
 
-// Ввод входных данных
+// input sparse matrix A (n, di, ia, al)
 int matrix::readFromFile(std::ifstream& fin) {
 
 	fin >> n;
@@ -30,7 +30,7 @@ int matrix::readFromFile(std::ifstream& fin) {
 }
 
 
-// Вывод результатов в файл
+// Output of results
 void matrix::writeToFile(std::ofstream& fout) {
 
 	/*fout << n << endl;
@@ -60,7 +60,7 @@ void matrix::writeToFile(std::ofstream& fout) {
 }
 
 
-// Преобразование разряженной матрицы A в плотную
+// Converting sparse A matrix in dense
 void matrix::convAToDense() {
 
 	for (int i = 0; i < n; ++i) {
@@ -74,7 +74,7 @@ void matrix::convAToDense() {
 }
 
 
-// Преобразование разряженной матрицы L в плотную
+// Converting sparse L matrix in dense
 void matrix::convLToDense() {
 
 	for (int i = 0; i < n; ++i) {
@@ -88,27 +88,27 @@ void matrix::convLToDense() {
 }
 
 
-// LL' разложнение матрицы A
+// LL' decomposion of the A matrix
 int matrix::decomposeChol() {
 
 	real tmp;
 
-	// Идём построчно в верхнем треугольнике, что экививалентно
-	// Обходу нижнего треугольника по столбцам вниз, начиная с первого
+	// РРґС‘Рј РїРѕСЃС‚СЂРѕС‡РЅРѕ РІ РІРµСЂС…РЅРµРј С‚СЂРµСѓРіРѕР»СЊРЅРёРєРµ, С‡С‚Рѕ СЌРєРёРІРёРІР°Р»РµРЅС‚РЅРѕ
+	// РћР±С…РѕРґСѓ РЅРёР¶РЅРµРіРѕ С‚СЂРµСѓРіРѕР»СЊРЅРёРєР° РїРѕ СЃС‚РѕР»Р±С†Р°Рј РІРЅРёР·, РЅР°С‡РёРЅР°СЏ СЃ РїРµСЂРІРѕРіРѕ
 	for (int i = 0; i < n; ++i) {
 
 		int i0 = ia[i];
 		int i1 = ia[i + 1];
 		int j = i - (i1 - i0);
 
-		// Рассчёт элементов нижнего треугольника
+		// Р Р°СЃСЃС‡С‘С‚ СЌР»РµРјРµРЅС‚РѕРІ РЅРёР¶РЅРµРіРѕ С‚СЂРµСѓРіРѕР»СЊРЅРёРєР°
 		for (int k = i0; k < i1; ++k, ++j) {
 
 			tmp = 0.0;
-			int elem_i = ia[i]; // номер элемента i-й строки
-			int elem_j = ia[j]; // номер элемента j-й строки
-			int beg_i = i - (ia[i + 1] - ia[i]); // индекс первого элемента i-й строки
-			int beg_j = j - (ia[j + 1] - ia[j]); // индекс первого элемента j-й строки
+			int elem_i = ia[i]; // РЅРѕРјРµСЂ СЌР»РµРјРµРЅС‚Р° i-Р№ СЃС‚СЂРѕРєРё
+			int elem_j = ia[j]; // РЅРѕРјРµСЂ СЌР»РµРјРµРЅС‚Р° j-Р№ СЃС‚СЂРѕРєРё
+			int beg_i = i - (ia[i + 1] - ia[i]); // РёРЅРґРµРєСЃ РїРµСЂРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р° i-Р№ СЃС‚СЂРѕРєРё
+			int beg_j = j - (ia[j + 1] - ia[j]); // РёРЅРґРµРєСЃ РїРµСЂРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р° j-Р№ СЃС‚СЂРѕРєРё
 
 			int length_dif = beg_j - beg_i;
 
@@ -126,7 +126,7 @@ int matrix::decomposeChol() {
 		}
 
 
-		// Рассчёт диагонального элемента
+		// Р Р°СЃСЃС‡С‘С‚ РґРёР°РіРѕРЅР°Р»СЊРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
 		tmp = 0.0;
 		for (int k = i0; k < i1; ++k)
 			tmp += al[k] * al[k];
@@ -137,37 +137,37 @@ int matrix::decomposeChol() {
 }
 
 
-// Вычисление невязки				A - L*L'
-vector <vector <real>> matrix::calcDiscarapancyForL() {
+// Calculating computetional error		A - L*L'
+vector <vector <real>> matrix::calcCompErrorForL() {
 
-	vector <vector <real>> dis;
+	vector <vector <real>> error;
 
 
-	return dis;
+	return error;
 }
 
 
-// Вычисление невязки				F - L*y
-vector <real> matrix::calcDiscarapancyFory() {
+// Calculating computetional error		F - L*y
+vector <real> matrix::calcCompErrorFory() {
 
-	vector <real> dis;
+	vector <real> error;
 
 
-	return dis;
+	return error;
 }
 
 
-// Вычисление невязки				y - L'*x
-vector <real> matrix::calcDiscarapancyForx() {
+// Calculating computetional error		y - L'*x
+vector <real> matrix::calcCompErrorForx() {
 
-	vector <real> dis;
+	vector <real> error;
 
 
-	return dis;
+	return error;
 }
 
 
-// Выполнеие прямого обхода:		Ly = F		y = L\F
+// Direct traversal (calculating y):	Ly = F		y = L\F
 vector <real> matrix::execDirectTraversal(vector<real> &F) {
 
 	real tmp;
@@ -192,34 +192,24 @@ vector <real> matrix::execDirectTraversal(vector<real> &F) {
 }
 
 
-// Выполнение обратного обхода:		L'x = y		x = L'\y
+// Reverse traversal (calculating x):	L'x = y		x = L'\y
 vector <real> matrix::execReverseTraversal(vector<real> &y) {
-	// TO DO:
-	/*
-	Попробовать использовать дополнительную память tmp[y]
-	*/
 
-
-	vector <real> x, tmp;
+	vector <real> x;
 	x.resize(n, 0);
-	tmp.resize(n, 0);
 
 	for (int i = n - 1; i >= 0; --i) {
+
+		x[i] = y[i] / di[i];
 
 		int i0 = ia[i];
 		int i1 = ia[i + 1];
-		int k = i - (i1 - i0);
+		int j = i - (i1 - i0);
 
-		for (int j = i0;j < i1; ++j, ++k) {
-			//y[k] -= al[j] * x[i];
-			tmp[k] += al[j] * x[i];
+		for (int k = i0;k < i1; ++k, ++j) {
+			y[j] -= al[k] * x[i];
 		}
-
-
 	}
 
-	for (int i = n - 1; i >= 0; --i) {
-		x[i] = (y[i] - tmp[i]) / di[i];
-	}
 	return x;
 }

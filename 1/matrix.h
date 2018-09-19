@@ -1,11 +1,12 @@
 #include "head.h"
 
 
-// Симметричная положительно определённая матрица
+// Symmetric positive-definite matrix
 class matrix {
 
 public:
 	int getDimention() { return n; }
+	
 	int readFromFile(std::ifstream& fin);
 	void writeToFile(std::ofstream& fout);
 
@@ -16,9 +17,9 @@ public:
 	void convAToDense();
 	void convLToDense();
 
-	vector <vector <real>> calcDiscarapancyForL();
-	vector <real> calcDiscarapancyFory();
-	vector <real> calcDiscarapancyForx();
+	vector <vector <real>> calcCompErrorForL();
+	vector <real> calcCompErrorFory();
+	vector <real> calcCompErrorForx();
 
 private:
 	vector <real> di, al;

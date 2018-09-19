@@ -32,15 +32,14 @@ int main() {
 	vector<real> F;
 
 
-	// ¬вод матрицы A и вектора F
+	// Input of matrix A and vector F
 	fin.open("A.txt");
 	if (m.readFromFile(fin) != 0) {
 		cout << "Can't read matrix A";
 		return -1;
 	}
 	fin.close();
-	//m.convAToDense();
-
+	
 	fin.open("F.txt");
 	if (inputVectorF(fin, F, m.getDimention()) != 0) {
 		cout << "Can't read vector F";
@@ -49,6 +48,7 @@ int main() {
 	fin.close();
 
 
+	// LL' decomposion
 	if (m.decomposeChol() != 0) {
 		cout << "Can't use Cholesky decomposition";
 		return -1;
@@ -56,11 +56,13 @@ int main() {
 	m.convLToDense();
 
 
+	// Direct and reverse traversal
 	vector<real> x, y;
 	y = m.execDirectTraversal(F);
 	x = m.execReverseTraversal(y);
 
 
+	// Output of vectors y and x
 	fout.open("out.txt");
 	fout << std::fixed << std::setprecision(15);
 	m.writeToFile(fout);
@@ -68,11 +70,9 @@ int main() {
 	for (int i = 0; i < m.getDimention(); ++i)
 		fout << y[i] << endl;
 
-	fout << endl << "X:" << endl;
+	fout << endl << "x:" << endl;
 	for (int i = 0; i < m.getDimention(); ++i)
 		fout << x[i] << endl;
-
-
 
 	fout.close();
 }
