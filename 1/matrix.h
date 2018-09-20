@@ -6,25 +6,13 @@ class matrix {
 
 public:
 	int getDimention() { return n; }
-	
-	int readFromFile(std::ifstream& fin);
-	void writeToFile(std::ofstream& fout);
-
+	int readAFromFile(std::ifstream& fin);
 	int decomposeChol();
-	vector <real> execDirectTraversal(vector<real> &F);
-	vector <real> execReverseTraversal(vector<real> &y);
 
-	void convAToDense();
-	void convLToDense();
+	void generateSparseMatrixA(int n, int max_width);
 
-	vector <vector <real>> calcCompErrorForL();
-	vector <real> calcCompErrorFory();
-	vector <real> calcCompErrorForx();
-
-private:
+protected:
 	vector <real> di, al;
 	vector <int> ia;
 	int n;
-
-	vector <vector <real>> L, A;
 };

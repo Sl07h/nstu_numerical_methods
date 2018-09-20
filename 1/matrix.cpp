@@ -2,7 +2,7 @@
 
 
 // input sparse matrix A (n, di, ia, al)
-int matrix::readFromFile(std::ifstream& fin) {
+int matrix::readAFromFile(std::ifstream& fin) {
 
 	fin >> n;
 
@@ -21,70 +21,7 @@ int matrix::readFromFile(std::ifstream& fin) {
 		fin >> al[i];
 	}
 
-	L.resize(n);
-	for (int i = 0; i < n; ++i) {
-		L[i].resize(n, 0);
-	}
-
 	return 0;
-}
-
-
-// Output of results
-void matrix::writeToFile(std::ofstream& fout) {
-
-	/*fout << n << endl;
-
-	for (int i = 0; i < di.size(); ++i) {
-	fout << di[i] << " ";
-	}
-	fout << endl;
-
-	for (int i = 0; i < ia.size(); ++i) {
-	fout << ia[i] << " ";
-	}
-	fout << endl;
-
-	for (int i = 0; i < al.size(); ++i) {
-	fout << al[i] << " ";
-	}
-	fout << endl;*/
-
-	fout << "Matrix L:" << endl;
-	for (int i = 0; i < n;++i) {
-		for (int j = 0; j < n;++j) {
-			fout << L[i][j] << " ";
-		}
-		fout << ";" << endl;
-	}
-}
-
-
-// Converting sparse A matrix in dense
-void matrix::convAToDense() {
-
-	for (int i = 0; i < n; ++i) {
-		A[i][i] = di[i];
-		int i0 = ia[i];
-		int i1 = ia[i + 1];
-		int j = i - (i1 - i0);
-		for (int k = i0; k < i1; ++k, ++j)
-			A[i][j] = al[k];
-	}
-}
-
-
-// Converting sparse L matrix in dense
-void matrix::convLToDense() {
-
-	for (int i = 0; i < n; ++i) {
-		L[i][i] = di[i];
-		int i0 = ia[i];
-		int i1 = ia[i + 1];
-		int j = i - (i1 - i0);
-		for (int k = i0; k < i1; ++k, ++j)
-			L[i][j] = al[k];
-	}
 }
 
 
@@ -93,22 +30,22 @@ int matrix::decomposeChol() {
 
 	real tmp;
 
-	// РРґС‘Рј РїРѕСЃС‚СЂРѕС‡РЅРѕ РІ РІРµСЂС…РЅРµРј С‚СЂРµСѓРіРѕР»СЊРЅРёРєРµ, С‡С‚Рѕ СЌРєРёРІРёРІР°Р»РµРЅС‚РЅРѕ
-	// РћР±С…РѕРґСѓ РЅРёР¶РЅРµРіРѕ С‚СЂРµСѓРіРѕР»СЊРЅРёРєР° РїРѕ СЃС‚РѕР»Р±С†Р°Рј РІРЅРёР·, РЅР°С‡РёРЅР°СЏ СЃ РїРµСЂРІРѕРіРѕ
+	// Идём построчно в верхнем треугольнике, что экививалентно
+	// Обходу нижнего треугольника по столбцам вниз, начиная с первого
 	for (int i = 0; i < n; ++i) {
 
 		int i0 = ia[i];
 		int i1 = ia[i + 1];
 		int j = i - (i1 - i0);
 
-		// Р Р°СЃСЃС‡С‘С‚ СЌР»РµРјРµРЅС‚РѕРІ РЅРёР¶РЅРµРіРѕ С‚СЂРµСѓРіРѕР»СЊРЅРёРєР°
+		// Рассчёт элементов нижнего треугольника
 		for (int k = i0; k < i1; ++k, ++j) {
 
 			tmp = 0.0;
-			int elem_i = ia[i]; // РЅРѕРјРµСЂ СЌР»РµРјРµРЅС‚Р° i-Р№ СЃС‚СЂРѕРєРё
-			int elem_j = ia[j]; // РЅРѕРјРµСЂ СЌР»РµРјРµРЅС‚Р° j-Р№ СЃС‚СЂРѕРєРё
-			int beg_i = i - (ia[i + 1] - ia[i]); // РёРЅРґРµРєСЃ РїРµСЂРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р° i-Р№ СЃС‚СЂРѕРєРё
-			int beg_j = j - (ia[j + 1] - ia[j]); // РёРЅРґРµРєСЃ РїРµСЂРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р° j-Р№ СЃС‚СЂРѕРєРё
+			int elem_i = ia[i]; // номер элемента i-й строки
+			int elem_j = ia[j]; // номер элемента j-й строки
+			int beg_i = i - (ia[i + 1] - ia[i]); // индекс первого элемента i-й строки
+			int beg_j = j - (ia[j + 1] - ia[j]); // индекс первого элемента j-й строки
 
 			int length_dif = beg_j - beg_i;
 
@@ -126,7 +63,7 @@ int matrix::decomposeChol() {
 		}
 
 
-		// Р Р°СЃСЃС‡С‘С‚ РґРёР°РіРѕРЅР°Р»СЊРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
+		// Рассчёт диагонального элемента
 		tmp = 0.0;
 		for (int k = i0; k < i1; ++k)
 			tmp += al[k] * al[k];
@@ -137,79 +74,30 @@ int matrix::decomposeChol() {
 }
 
 
-// Calculating computational error		A - L*L'
-vector <vector <real>> matrix::calcCompErrorForL() {
+// Genereate sparse matrix A
+void matrix::generateSparseMatrixA(int n, int max_width) {
 
-	vector <vector <real>> error;
-
-
-	return error;
-}
-
-
-// Calculating computational error		F - L*y
-vector <real> matrix::calcCompErrorFory() {
-
-	vector <real> error;
-
-
-	return error;
-}
-
-
-// Calculating computational error		y - L'*x
-vector <real> matrix::calcCompErrorForx() {
-
-	vector <real> error;
-
-
-	return error;
-}
-
-
-// Direct traversal (calculating y):	Ly = F		y = L\F
-vector <real> matrix::execDirectTraversal(vector<real> &F) {
-
-	real tmp;
-	vector <real> y;
-	y.resize(n, 0);
+	di.resize(n);
+	ia.resize(n + 1);
+	ia[0] = 0;
+	ia[1] = 0;
+	int prev = 0;
 
 	for (int i = 0; i < n; ++i) {
 
-		tmp = 0.0;
-		int i0 = ia[i];
-		int i1 = ia[i + 1];
-		int k = i - (i1 - i0);
+		di[i] = (i % 3) * 100000;
+		if (max_width >= i)
+			max_width = i - 1;
 
-		for (int j = i0;j < i1;++j, ++k) {
-			tmp += al[j] * y[k];
-		}
-
-		y[i] = (F[i] - tmp) / di[i];
-	}
-
-	return y;
-}
-
-
-// Reverse traversal (calculating x):	L'x = y		x = L'\y
-vector <real> matrix::execReverseTraversal(vector<real> &y) {
-
-	vector <real> x;
-	x.resize(n, 0);
-
-	for (int i = n - 1; i >= 0; --i) {
-
-		x[i] = y[i] / di[i];
+		prev += rand() % max_width; // Чтобы не обращаться к массиву 2 раза
+		ia[i + 1] = prev;
 
 		int i0 = ia[i];
 		int i1 = ia[i + 1];
-		int j = i - (i1 - i0);
 
-		for (int k = i0;k < i1; ++k, ++j) {
-			y[j] -= al[k] * x[i];
+		for (int k = i0; k < i1; ++k) {
+
+			al[k] = rand() % 10 - 5;
 		}
 	}
-
-	return x;
 }
