@@ -75,21 +75,26 @@ int matrix::decomposeChol() {
 
 
 // Genereate sparse matrix A
-void matrix::generateSparseMatrixA(int n, int max_width) {
+void matrix::generateSparseMatrixA(int n_new, int max_width) {
 
-	di.resize(n);
-	ia.resize(n + 1);
-	ia[0] = 0;
-	ia[1] = 0;
+	n = n_new;
+	di.resize(n, 0);
+	ia.resize(n + 1, 0);
+
 	int prev = 0;
+	int tmp_width;
 
 	for (int i = 0; i < n; ++i) {
 
-		di[i] = (i % 3) * 100000;
+		di[i] = ((i + 1) % 3) * 100000;
 		if (max_width >= i)
-			max_width = i - 1;
+			tmp_width = i;
+		else
+			tmp_width = max_width;
 
-		prev += rand() % max_width; // Чтобы не обращаться к массиву 2 раза
+		if (tmp_width > 0)
+			prev += rand() % tmp_width; // Чтобы не обращаться к массиву 2 раза
+		
 		ia[i + 1] = prev;
 
 		int i0 = ia[i];
@@ -97,7 +102,8 @@ void matrix::generateSparseMatrixA(int n, int max_width) {
 
 		for (int k = i0; k < i1; ++k) {
 
-			al[k] = rand() % 10 - 5;
+			al.push_back(rand() % 10 - 5);
 		}
 	}
+
 }

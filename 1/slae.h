@@ -7,10 +7,13 @@
 class SLAE : public matrix, public vect {
 
 public:
+	~SLAE() { A.clear(); }
 	void execDirectTraversal();
 	void execReverseTraversal();
 
 	void convToDense();
+	void mult();
+	void mult_dense();
 	void createHilbertMatrix();
 
 

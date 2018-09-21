@@ -18,8 +18,8 @@ int vect::readFFromFile(std::ifstream& fin, int size) {
 void vect::generateVectX(int size) {
 
 	F.resize(size);
-	for (int i = 1; i <= size; ++i) {
-		F[i] = i;
+	for (int i = 0; i < size; ++i) {
+		F[i] = i + 1;
 	}
 }
 
@@ -31,4 +31,17 @@ void vect::writexToFile(std::ofstream& fout) {
 	for (int i = 0; i < F.size();++i) {
 		fout << F[i] << endl;
 	}
+}
+
+
+// Check if X is almost equal to (1,2,...,n)'
+bool vect::isXcorrect() {
+
+	for (int i = 0; i < F.size();++i) {
+
+		if (abs(F[i] - (real)(i + 1)) > std::numeric_limits<real>::digits10 + 2)
+			return false;
+	}
+
+	return true;
 }
