@@ -11,11 +11,11 @@ TEST_CASE("Random-generated sparse matrix") {
 	std::ofstream fout;
 	int max_width = 10, K_max = 7, size = 10;;
 	
-	matrix m;
+	/*matrix m;
 	m.generateSparseMatrixA(size, 4);
 	fout.open("A.txt");
 	m.writeAToFile(fout);
-	fout.close();
+	fout.close();*/
 
 	fout.open("x.txt");
 	for (int k = 0; k <= K_max; ++k) {
@@ -25,8 +25,8 @@ TEST_CASE("Random-generated sparse matrix") {
 	
 		SLAE slae;
 		cout << "k = " << k << endl;
-		fout << "k = " << k << endl;
-		cout << "Started generating sparse matrix A" << endl;
+		//fout << endl<< "k = " << k << endl;
+		//cout << "Started generating sparse matrix A" << endl;
 		//slae.generateSparseMatrixA(k, i, max_width);
 		//slae.readAFromFile(fin);
 		slae.readAFromFile(fin);
@@ -39,8 +39,7 @@ TEST_CASE("Random-generated sparse matrix") {
 		slae.mult();
 		
 		slae.convAToDense();
-		
-		slae.writeMatrixtoFile(fout, "Matrix A");
+		//slae.writeMatrixtoFile(fout, "Matrix A");
 		//slae.writeVectToFile(fout, "Vector F");
 
 		cout << "Started LL' decomposion" << endl;
@@ -53,8 +52,9 @@ TEST_CASE("Random-generated sparse matrix") {
 
 		cout << "Started reverse traversal" << endl;
 		slae.execReverseTraversal();
-		//slae.writeVectToFile(fout, "Vector x");
+		slae.writeVectToFile(fout, "Vector x");
 		slae.writexCompError(fout, "x - x*");
+		fout << endl;
 		cout << endl;
 		fin.close();
 		CHECK(slae.isXcorrect());
