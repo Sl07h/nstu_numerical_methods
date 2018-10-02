@@ -2,9 +2,24 @@
 #include "slae.h"
 
 
-// Converting sparse matrix to dense format
-void SLAE::convToDense() {
+// Output dense matrix A
+void SLAE::writeMatrixtoFile(std::ofstream& fout, char *str) {
 
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1) << str << endl;
+	for (int i = 0; i < A.size(); ++i) {
+		for (int j = 0; j < A.size(); ++j) {
+			fout << A[i][j] << "\t";
+		}
+		fout << ";" << endl;
+	}
+	fout << endl;
+}
+
+
+// Converting sparse matrix to dense format
+void SLAE::convAToDense() {
+
+	A.clear();
 	A.resize(n);
 	for (int i = 0; i < n; ++i) {
 		A[i].resize(n, 0);
@@ -26,24 +41,34 @@ void SLAE::convToDense() {
 }
 
 
-// A*x = F
-void SLAE::mult_dense() {
+// Converting sparse matrix to dense format
+void SLAE::convLToDense() {
 
-	vector <real> F_tmp(n, 0);
-
+	A.clear();
+	A.resize(n);
 	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++j)
-			F_tmp[i] = A[i][j] * F[j];// В F лежит x
+		A[i].resize(n, 0);
 	}
 
-	F = F_tmp;
+	for (int i = 0; i < n; ++i) {
+
+		A[i][i] = di[i];
+		int i0 = ia[i];
+		int i1 = ia[i + 1];
+		int j = i - (i1 - i0);
+
+		for (int k = i0; k < i1; ++k, ++j) {
+
+			A[i][j] = al[k];
+		}
+	}
 }
 
 
 // A*x = F
 void SLAE::mult() {
 
-	vector <real> F_tmp(n, 0);
+	vector <real_sum> F_tmp(n, 0);
 
 	for (int i = 0; i < n; ++i) {
 
@@ -63,15 +88,20 @@ void SLAE::mult() {
 		F_tmp[i] += di[i] * F[i];
 	}
 
-	F = F_tmp;
+	for (int i = 0; i < n; ++i)
+		F[i] = real(F_tmp[i]);
 }
 
 
 // Create D. Hilbert's matrix
-void SLAE::createHilbertMatrix() {
+void SLAE::createHilbertMatrix(int n) {
 
-	for (int i = 0; A.size(); ++i) {
-		for (int j = 0; A.size(); ++j) {
+	A.resize(n);
+	for (int i = 0; n; ++i)
+		A[i].resize(n, 0);
+
+	for (int i = 0; n; ++i) {
+		for (int j = 0; n; ++j) {
 			A[i][j] = 1 / (i + j - 1);
 		}
 	}
@@ -81,7 +111,7 @@ void SLAE::createHilbertMatrix() {
 // Direct traversal (calculating y):	Ly = F		y = L\F
 void SLAE::execDirectTraversal() {
 
-	real tmp;
+	real_sum tmp;
 
 	for (int i = 0; i < n; ++i) {
 

@@ -2,8 +2,8 @@
 #include "vect.h"
 
 
-// Input of vector F
-int vect::readFFromFile(std::ifstream& fin, int size) {
+// Input of vector
+int vect::readVectFromFile(std::ifstream& fin, int size) {
 
 	F.resize(size);
 	for (int i = 0; i < size; ++i) {
@@ -25,12 +25,26 @@ void vect::generateVectX(int size) {
 
 
 // Output of results
-void vect::writexToFile(std::ofstream& fout) {
+void vect::writeVectToFile(std::ofstream& fout, char *str) {
 
-	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1) << "x:" << endl;
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1) << str << endl;
 	for (int i = 0; i < F.size();++i) {
 		fout << F[i] << endl;
 	}
+
+	fout << endl;
+}
+
+
+// Output of computational error
+void vect::writexCompError(std::ofstream& fout, char *str) {
+
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1) << str << endl;
+	for (int i = 0; i < F.size();++i) {
+		fout << F[i] - real(i + 1) << endl;
+	}
+	
+	fout << endl;
 }
 
 

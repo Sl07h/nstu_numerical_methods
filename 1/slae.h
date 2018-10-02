@@ -1,5 +1,5 @@
 #include "head.h"
-#include "matrix.h"
+#include "profMatrix.h"
 #include "vect.h"
 
 
@@ -7,16 +7,18 @@
 class SLAE : public matrix, public vect {
 
 public:
-	~SLAE() { A.clear(); }
+
+	void writeMatrixtoFile(std::ofstream& fout, char* str);
+	
 	void execDirectTraversal();
 	void execReverseTraversal();
 
-	void convToDense();
+	void convAToDense();
+	void convLToDense();
 	void mult();
-	void mult_dense();
-	void createHilbertMatrix();
+	void createHilbertMatrix(int n);
 
 
 private:
-	vector <vector <real>> A;
+	vector <vector <double>> A;
 };

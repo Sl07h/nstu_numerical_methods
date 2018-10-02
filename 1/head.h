@@ -6,7 +6,10 @@
 #include <iomanip>
 
 using std::vector;
+using std::string;
 using std::cout;
 using std::endl;
 
+
 typedef float real;
+typedef float real_sum;

@@ -1,4 +1,4 @@
-#include "matrix.h"
+#include "profMatrix.h"
 
 
 // input sparse matrix A (n, di, ia, al)
@@ -25,10 +25,31 @@ int matrix::readAFromFile(std::ifstream& fin) {
 }
 
 
+// Output sparse matrix A (n, di, ia, al)
+void matrix::writeAToFile(std::ofstream& fout) {
+
+	fout << n << endl;
+
+	for (int i = 0; i < di.size(); ++i) {
+		fout << di[i] << " ";
+	}
+	fout << endl;
+
+	for (int i = 0; i < ia.size(); ++i) {
+		fout << ia[i] << " ";
+	}
+	fout << endl;
+
+	for (int i = 0; i < al.size(); ++i) {
+		fout << al[i] << " ";
+	}
+}
+
+
 // LL' decomposion of the A matrix
 int matrix::decomposeChol() {
 
-	real tmp;
+	real_sum tmp;
 
 	// Идём построчно в верхнем треугольнике, что экививалентно
 	// Обходу нижнего треугольника по столбцам вниз, начиная с первого
@@ -82,19 +103,21 @@ void matrix::generateSparseMatrixA(int n_new, int max_width) {
 	ia.resize(n + 1, 0);
 
 	int prev = 0;
-	int tmp_width;
+	int tmp_width; // Длина профиля строки
 
 	for (int i = 0; i < n; ++i) {
 
-		di[i] = ((i + 1) % 3) * 100000;
+
 		if (max_width >= i)
 			tmp_width = i;
 		else
 			tmp_width = max_width;
 
-		if (tmp_width > 0)
-			prev += rand() % tmp_width; // Чтобы не обращаться к массиву 2 раза
-		
+		//if (tmp_width > 0)
+			//prev += rand() % tmp_width; // Чтобы не обращаться к массиву 2 раза
+
+		prev += tmp_width;
+
 		ia[i + 1] = prev;
 
 		int i0 = ia[i];
@@ -102,8 +125,25 @@ void matrix::generateSparseMatrixA(int n_new, int max_width) {
 
 		for (int k = i0; k < i1; ++k) {
 
-			al.push_back(rand() % 10 - 5);
+			al.push_back(-(rand() % 5));
 		}
 	}
 
+
+	vector <real_sum> tmp(n, 0);
+
+	for (int i = 0; i < n; ++i) {
+
+		int i0 = ia[i];
+		int i1 = ia[i + 1];
+		int j = i - (i1 - i0);
+
+		for (int k = i0; k < i1; ++k, ++j) {
+			tmp[i] += al[k];
+			tmp[j] += al[k];
+		}
+	}
+
+	for (int i = 0; i < n; ++i)
+		di[i] = -tmp[i];
 }
