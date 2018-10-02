@@ -16,7 +16,6 @@ public:
 	void convAToDense();
 	void convLToDense();
 	void mult();
-	void createHilbertMatrix(int n);
 
 
 private:

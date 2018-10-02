@@ -27,26 +27,39 @@ void vect::generateVectX(int size) {
 // Output of results
 void vect::writeVectToFile(std::ofstream& fout, char *str) {
 
-	//fout << str << endl;
+	fout << str << endl;
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
+	for (int i = 0; i < F.size();++i) {
+		fout << F[i] << endl;
+	}
+}
+
+
+// generates 1/3 of table in research
+void vect::writeTableToFile(std::ofstream& fout) {
+	
 	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
 	for (int i = 0; i < F.size();++i) {
 		fout << F[i] << " ";
 	}
-
 	fout << " \t";
+	
+	fout << std::scientific;
+	for (int i = 0; i < F.size();++i) {
+		fout << F[i] - real(i + 1) << " ";
+	}
+	fout << " \t" << endl;
 }
 
 
 // Output of computational error
 void vect::writexCompError(std::ofstream& fout, char *str) {
 
-	//fout << str << endl;
+	fout << str << endl;
 	fout << std::scientific;
 	for (int i = 0; i < F.size();++i) {
-		fout << F[i] - real(i + 1) << " ";
+		fout << F[i] - real(i + 1) << endl;
 	}
-	
-	fout << " \t";
 }
 
 

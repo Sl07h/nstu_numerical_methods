@@ -5,23 +5,31 @@ int main() {
 
 	std::ifstream fin;
 	std::ofstream fout;
-
+	// Output of vector x
+	fout.open("x.txt");
 	SLAE slae;
 
 	// Input of matrix A and vector F
-	fin.open("A.txt");
+	/*fin.open("A.txt");
 	if (slae.readAFromFile(fin) != 0) {
 		cout << "Can't read matrix A";
 		return -1;
 	}
 	fin.close();
+	slae.addConditionNumber(1);*/
 
-	fin.open("F.txt");
-	if (slae.readFFromFile(fin, slae.getDimention()) != 0) {
+
+	slae.createHilbertMatrix(10);
+	slae.convAToDense();
+	slae.writeAToFile(fout);
+	slae.generateVectX(10);
+	slae.mult();
+	/*fin.open("F.txt");
+	if (slae.readVectFromFile(fin, slae.getDimention()) != 0) {
 		cout << "Can't read vector F";
 		return -1;
 	}
-	fin.close();
+	fin.close();*/
 
 
 	// LL' decomposion
@@ -36,8 +44,7 @@ int main() {
 	slae.execReverseTraversal();
 
 
-	// Output of vector x
-	fout.open("x.txt");
-	slae.writexToFile(fout);
+	
+	slae.writeVectToFile(fout, "Vector x:");
 	fout.close();
 }

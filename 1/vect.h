@@ -11,6 +11,7 @@ public:
 	void generateVectX(int size);
 	void writeVectToFile(std::ofstream& fout, char *str);
 	void writexCompError(std::ofstream& fout, char *str);
+	void writeTableToFile(std::ofstream& fout);
 	bool isXcorrect();
 
 

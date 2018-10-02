@@ -93,21 +93,6 @@ void SLAE::mult() {
 }
 
 
-// Create D. Hilbert's matrix
-void SLAE::createHilbertMatrix(int n) {
-
-	A.resize(n);
-	for (int i = 0; n; ++i)
-		A[i].resize(n, 0);
-
-	for (int i = 0; n; ++i) {
-		for (int j = 0; n; ++j) {
-			A[i][j] = 1 / (i + j - 1);
-		}
-	}
-}
-
-
 // Direct traversal (calculating y):	Ly = F		y = L\F
 void SLAE::execDirectTraversal() {
 
@@ -118,10 +103,10 @@ void SLAE::execDirectTraversal() {
 		tmp = 0.0;
 		int i0 = ia[i];
 		int i1 = ia[i + 1];
-		int k = i - (i1 - i0);
+		int j = i - (i1 - i0);
 
-		for (int j = i0;j < i1;++j, ++k) {
-			tmp += al[j] * F[k];
+		for (int k = i0; k < i1; ++k, ++j) {
+			tmp += al[k] * F[j];
 		}
 
 		F[i] = (F[i] - tmp) / di[i];

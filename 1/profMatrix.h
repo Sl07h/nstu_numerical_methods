@@ -12,6 +12,7 @@ public:
 	int decomposeChol();
 
 	void generateSparseMatrixA(int n_new, int max_width);
+	void createHilbertMatrix(int size);
 	void addConditionNumber(int k) { di[0] += pow(10, -k); }
 
 protected:

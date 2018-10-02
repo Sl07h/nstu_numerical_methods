@@ -43,6 +43,8 @@ void matrix::writeAToFile(std::ofstream& fout) {
 	for (int i = 0; i < al.size(); ++i) {
 		fout << al[i] << " ";
 	}
+
+	fout << endl;
 }
 
 
@@ -146,4 +148,32 @@ void matrix::generateSparseMatrixA(int n_new, int max_width) {
 
 	for (int i = 0; i < n; ++i)
 		di[i] = -tmp[i];
+}
+
+
+// Create D. Hilbert's matrix
+void matrix::createHilbertMatrix(int size) {
+
+	n = size;
+	di.resize(n);
+	ia.resize(n + 1);
+	al.resize(n*(n - 1) / 2); // число элментов нижнего треугольника
+	ia[0] = 0;
+	ia[1] = 0;
+	for (int i = 1; i < ia.size(); ++i) {
+		ia[i + 1] = ia[i] + i;
+	}
+
+
+	for (int i = 0; i < n; ++i) {
+
+		int i0 = ia[i];
+		int i1 = ia[i + 1];
+		int j = i - (i1 - i0);
+		for (int k = i0; k < i1; ++k, ++j) {
+
+			al[k] = 1 / real(i + j + 1);
+		}
+		di[i] = 1 / real(i + j + 1);
+	}
 }
