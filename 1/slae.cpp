@@ -135,3 +135,44 @@ void SLAE::execReverseTraversal() {
 
 	F = x;
 }
+
+
+
+// Gaussian elemination
+void SLAE::calcGauss() {
+
+	// Приведение к верхне-треугольному виду
+	for (int j = 0; j < A.size(); ++j) {
+		for (int i = j + 1; i < A.size(); ++i) {
+
+			real toMult = A[i][j] / A[j][j]; // Коэффициент, на который надо умножить строку
+
+			for (int k = 0; k < A.size(); ++k)	// Отняли стоку
+				A[i][k] -= toMult * A[j][k];
+
+			F[i] -= toMult * F[j];
+		}
+	}
+
+
+	// Обратный обход
+	vector <real> x;
+	x.resize(A.size(), 0);
+
+	for (int i = n - 1; i >= 0; --i) {
+
+		real_sum tmp = 0.0;
+		for (int j = i + 1;j < A.size(); ++j) {
+			tmp += A[i][j] * x[j];
+		}
+		x[i] = (F[i] - tmp) / A[i][i];
+	}
+	F = x;
+}
+
+
+// Gaussian elemination with leading element selection
+void SLAE::calcGaussAdvanced() {
+
+
+}

@@ -16,7 +16,8 @@ public:
 	void convAToDense();
 	void convLToDense();
 	void mult();
-
+	void calcGauss();
+	void calcGaussAdvanced();
 
 private:
 	vector <vector <double>> A;

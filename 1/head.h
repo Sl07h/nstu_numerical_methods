@@ -12,5 +12,5 @@ using std::endl;
 
 
 // float || double
-typedef float real;
+typedef double real;
 typedef double real_sum;
