@@ -174,5 +174,41 @@ void SLAE::calcGauss() {
 // Gaussian elemination with leading element selection
 void SLAE::calcGaussAdvanced() {
 
+	// Приведение к верхне-треугольному виду
+	for (int j = 0; j < A.size(); ++j) {
+		for (int i = j + 1; i < A.size(); ++i) {
 
+			int max = -DBL_MAX, row = i;
+			for (int k = i; k < A.size(); ++k) // Ищем строку с ведущим элементом
+				if (A[k][j] > max) {
+					max = A[k][j];
+					row = k;
+				}
+			
+			std::swap(A[row], A[i]); // Меняем строку с  ведущим элементом на i-ю
+			std::swap(F[row], F[i]);
+
+			real toMult = A[i][j] / A[j][j]; // Коэффициент, на который надо умножить строку
+
+			for (int k = 0; k < A.size(); ++k)	// Отняли стоку
+				A[i][k] -= toMult * A[j][k];
+
+			F[i] -= toMult * F[j];
+		}
+	}
+
+
+	// Обратный обход
+	vector <real> x;
+	x.resize(A.size(), 0);
+
+	for (int i = n - 1; i >= 0; --i) {
+
+		real_sum tmp = 0.0;
+		for (int j = i + 1;j < A.size(); ++j) {
+			tmp += A[i][j] * x[j];
+		}
+		x[i] = (F[i] - tmp) / A[i][i];
+	}
+	F = x;
 }

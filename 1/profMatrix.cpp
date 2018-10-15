@@ -114,10 +114,7 @@ void matrix::generateSparseMatrixA(int n_new, int max_width) {
 			tmp_width = i;
 		else
 			tmp_width = max_width;
-
-		//if (tmp_width > 0)
-			//prev += rand() % tmp_width; // Чтобы не обращаться к массиву 2 раза
-
+		
 		prev += tmp_width;
 
 		ia[i + 1] = prev;
@@ -157,13 +154,13 @@ void matrix::createHilbertMatrix(int size) {
 	n = size;
 	di.resize(n);
 	ia.resize(n + 1);
-	al.resize(n*(n - 1) / 2); // число элментов нижнего треугольника
+	al.resize(n*(n - 1) / 2); // число элементов нижнего треугольника
+
 	ia[0] = 0;
 	ia[1] = 0;
-	for (int i = 1; i < ia.size(); ++i) {
+	for (int i = 0; i < ia.size() - 1; ++i)
 		ia[i + 1] = ia[i] + i;
-	}
-
+	
 
 	for (int i = 0; i < n; ++i) {
 

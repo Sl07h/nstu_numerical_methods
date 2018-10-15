@@ -1,7 +1,7 @@
 #include "head.h"
 
 
-// Symmetric positive-definite matrix
+// Symmetric positive-definite sparse matrix
 class matrix {
 
 public:

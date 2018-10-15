@@ -1,7 +1,7 @@
 #include "head.h"
 
 
-// Vectors F,  y = L\F,  x = L'\y
+// Vectors F, x,  y = L\F,  x = L'\y
 class vect {
 
 public:
