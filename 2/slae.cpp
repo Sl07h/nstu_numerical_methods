@@ -1,6 +1,6 @@
 #include "slae.h"
 
-// Преобразование 7-ми диагональной матрицы в плотный формат
+// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ 7-РјРё РґРёР°РіРѕРЅР°Р»СЊРЅРѕР№ РјР°С‚СЂРёС†С‹ РІ РїР»РѕС‚РЅС‹Р№ С„РѕСЂРјР°С‚
 void SLAE::convMatrixToDense() {
 
 	A.clear();
@@ -35,7 +35,7 @@ void SLAE::convMatrixToDense() {
 }
 
 
-// Вывод плотной матрицы в файл
+// Р’С‹РІРѕРґ РїР»РѕС‚РЅРѕР№ РјР°С‚СЂРёС†С‹ РІ С„Р°Р№Р»
 void SLAE::writeDenseMatrixToFile(char * fileName) {
 
 	std::ofstream fout;
@@ -52,11 +52,11 @@ void SLAE::writeDenseMatrixToFile(char * fileName) {
 }
 
 
-// Умножение i-й строки матрицы на вектор
+// РЈРјРЅРѕР¶РµРЅРёРµ i-Р№ СЃС‚СЂРѕРєРё РјР°С‚СЂРёС†С‹ РЅР° РІРµРєС‚РѕСЂ
 real SLAE::multLine(vector <real> &line, int i, int mode) {
 
 	real_sum sum = 0;
-	if (mode == 1 || mode == 3) {	// Нижний треугольник
+	if (mode == 1 || mode == 3) {	// РќРёР¶РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРє
 
 		if (i > 0) {
 
@@ -70,8 +70,8 @@ real SLAE::multLine(vector <real> &line, int i, int mode) {
 	}
 
 
-	if (mode == 2 || mode == 3) {	// Главная диагональ
-									// и верхний треугольник
+	if (mode == 2 || mode == 3) {	// Р“Р»Р°РІРЅР°СЏ РґРёР°РіРѕРЅР°Р»СЊ
+									// Рё РІРµСЂС…РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРє
 		sum += di[i] * line[i];
 		if (i < n - 1) {
 
@@ -89,11 +89,11 @@ real SLAE::multLine(vector <real> &line, int i, int mode) {
 }
 
 
-// Умножение матрицы на вектор
+// РЈРјРЅРѕР¶РµРЅРёРµ РјР°С‚СЂРёС†С‹ РЅР° РІРµРєС‚РѕСЂ
 void SLAE::mult() {
-
+	F.clear();
 	F.resize(n, 0);
-	// Нижний треугольник
+	// РќРёР¶РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРє
 	for (int i = 0; i < al1.size(); ++i)
 		F[i + 1] += al1[i] * xk[i];
 	for (int i = 0; i < al2.size(); ++i)
@@ -101,11 +101,11 @@ void SLAE::mult() {
 	for (int i = 0; i < al3.size(); ++i)
 		F[i + m + 3] += al3[i] * xk[i];
 
-	// Главная диагональ
+	// Р“Р»Р°РІРЅР°СЏ РґРёР°РіРѕРЅР°Р»СЊ
 	for (int i = 0; i < di.size(); ++i)
 		F[i] += di[i] * xk[i];
 
-	// Верхний треугольник
+	// Р’РµСЂС…РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРє
 	for (int i = 0; i < au1.size(); ++i)
 		F[i] += au1[i] * xk[i + 1];
 	for (int i = 0; i < au2.size(); ++i)
@@ -115,8 +115,8 @@ void SLAE::mult() {
 }
 
 
-// Метод Якоби. 0 < w < 1
-// Используется общая память для xk и xk1
+// РњРµС‚РѕРґ РЇРєРѕР±Рё. 0 < w < 1
+// РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РѕР±С‰Р°СЏ РїР°РјСЏС‚СЊ РґР»СЏ xk Рё xk1
 void SLAE::Jacobi(real w) {
 
 	real_sum sum;
@@ -129,7 +129,7 @@ void SLAE::Jacobi(real w) {
 }
 
 
-// Метод Гаусса-Зейделя. 0 < w < 2
+// РњРµС‚РѕРґ Р“Р°СѓСЃСЃР°-Р—РµР№РґРµР»СЏ. 0 < w < 2
 void SLAE::GaussSeildel(real w) {
 
 	real_sum sum;
@@ -146,9 +146,9 @@ void SLAE::GaussSeildel(real w) {
 }
 
 
-// Решение СЛАУ итерационным методом
-// 1  Метод Якоби
-// 2  Метод Гаусса-Зейделя
+// Р РµС€РµРЅРёРµ РЎР›РђРЈ РёС‚РµСЂР°С†РёРѕРЅРЅС‹Рј РјРµС‚РѕРґРѕРј
+// 1  РњРµС‚РѕРґ РЇРєРѕР±Рё
+// 2  РњРµС‚РѕРґ Р“Р°СѓСЃСЃР°-Р—РµР№РґРµР»СЏ
 int SLAE::calcIterative(int mode, real w) {
 	int i = 0;
 	while (i < maxiter && calcRelativeDiscrepancy() >= E) {
@@ -163,16 +163,47 @@ int SLAE::calcIterative(int mode, real w) {
 	return i;
 }
 
-real SLAE::findOptimalW(int mode) {
 
-	real maxIter;
-	if (mode == 1) maxIter = 100;
-	else maxIter = 201;
 
-	for (int i = 0; i < maxIter; ++i)
-		calcIterative(mode, real(i) / 100);
+// РџРѕРёСЃРє РѕРїС‚РёРјР°Р»СЊРЅРѕРіРѕ РІРµСЃР°
+real SLAE::findOptimalW(int mode, bool doWriteLog, std::ofstream& fout) {
 
-	return real();
+	real optimalW, tmpW;
+	int max_i, min_i = maxiter, tmp_i;
+	if (mode == 1) max_i = 101;
+	else max_i = 200;
+
+	for (int i = 0; i < max_i; ++i) {
+
+		tmpW = real(i) / 100;
+		tmp_i = calcIterative(mode, tmpW);
+
+		if (tmp_i < min_i) {
+			min_i = tmp_i;
+			optimalW = tmpW;
+		}
+
+
+		if (doWriteLog) {
+
+			fout << std::fixed << std::setprecision(2) << tmpW << "\t";
+			fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
+			for (int i = 0; i < xk.size();++i)
+				fout << xk[i] << " ";
+			fout << " \t";
+
+			fout << std::scientific;
+			for (int i = 0; i < xk.size();++i)
+				fout << xk[i] - real(i + 1) << " ";
+			fout << " \t";
+
+			fout << tmp_i << "\t";
+			fout << calcCondNumber() << endl;
+		}
+	}
+
+
+	return optimalW;
 }
 
 
@@ -182,7 +213,7 @@ vector <real_sum>& SLAE::sumAtlowerTrianByDiag(vector <real>& line) {
 	vector <real_sum> sum;
 	sum.resize(n, 0);
 
-	// Нижний треугольник
+	// РќРёР¶РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРє
 	for (int i = 0; i < al1.size(); ++i)
 		sum[i + 1] += al1[i] * line[i];
 	for (int i = 0; i < al2.size(); ++i)
@@ -200,11 +231,11 @@ vector <real_sum>& SLAE::sumAtUpperTrianByDiag(vector <real>& line) {
 	vector <real_sum> sum;
 	sum.resize(n, 0);
 
-	// Главная диагональ
+	// Р“Р»Р°РІРЅР°СЏ РґРёР°РіРѕРЅР°Р»СЊ
 	for (int i = 0; i < di.size(); ++i)
 		F[i] += di[i] * line[i];
 
-	// Верхний треугольник
+	// Р’РµСЂС…РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРє
 	for (int i = 0; i < au1.size(); ++i)
 		F[i] += au1[i] * line[i + 1];
 	for (int i = 0; i < au2.size(); ++i)
@@ -216,7 +247,7 @@ vector <real_sum>& SLAE::sumAtUpperTrianByDiag(vector <real>& line) {
 }
 
 
-// Метод Якоби с кешированием. 0 < w < 1
+// РњРµС‚РѕРґ РЇРєРѕР±Рё СЃ РєРµС€РёСЂРѕРІР°РЅРёРµРј. 0 < w < 1
 void SLAE::BoostedJacobi(real w) {
 
 	vector <real> xk1, sum1, sum2;
@@ -224,7 +255,7 @@ void SLAE::BoostedJacobi(real w) {
 	sum1 = sumAtlowerTrianByDiag(xk);
 	sum2 = sumAtUpperTrianByDiag(xk);
 
-	generateInitualGuess(n); // Создаём начальное приближение
+	generateInitualGuess(n); // РЎРѕР·РґР°С‘Рј РЅР°С‡Р°Р»СЊРЅРѕРµ РїСЂРёР±Р»РёР¶РµРЅРёРµ
 
 	for (int i = 0; i < n; ++i) {
 		xk1[i] = xk[i] + w * (F[i] - sum1[i] - sum2[i]) / di[i];
@@ -236,7 +267,7 @@ void SLAE::BoostedJacobi(real w) {
 
 
 
-// Метод Гаусса-Зейделя с кешированием. 0 < w < 2
+// РњРµС‚РѕРґ Р“Р°СѓСЃСЃР°-Р—РµР№РґРµР»СЏ СЃ РєРµС€РёСЂРѕРІР°РЅРёРµРј. 0 < w < 2
 void SLAE::BoostedGaussSeildel(real w) {
 
 	real_sum sum = 0;
@@ -256,7 +287,7 @@ void SLAE::BoostedGaussSeildel(real w) {
 
 
 
-// Вычисление нормы в Евклидовом пространстве
+// Р’С‹С‡РёСЃР»РµРЅРёРµ РЅРѕСЂРјС‹ РІ Р•РІРєР»РёРґРѕРІРѕРј РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРµ
 real SLAE::calcNormE(vector <real> &x) {
 
 	real_sum norma = 0;
@@ -267,30 +298,33 @@ real SLAE::calcNormE(vector <real> &x) {
 }
 
 
-// Рассчёт относительной невязки
+// Р Р°СЃСЃС‡С‘С‚ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕР№ РЅРµРІСЏР·РєРё
 real SLAE::calcRelativeDiscrepancy() {
 
 	vector <real> numerator, denominator = F;
 	numerator.resize(n);
-	mult(); // F = A*xk
-	for (int i = 0; i < n; ++i)
-		numerator[i] = denominator[i] - F[i];
 
-	return calcNormE(numerator) / calcNormE(denominator);
+	mult(); // F = A*xk
+
+	for (int i = 0; i < n; ++i)
+		numerator[i] = denominator[i] - F[i]; // ||F - Axk||
+
+	real res = calcNormE(numerator) / calcNormE(denominator);
+	F = denominator;
+	return res;
 }
 
 
-// Рассчёт числа обусловленности
+// Р Р°СЃСЃС‡С‘С‚ С‡РёСЃР»Р° РѕР±СѓСЃР»РѕРІР»РµРЅРЅРѕСЃС‚Рё
 int SLAE::calcCondNumber() {
 
 	vector <real> numerator, denominator;
 	numerator.resize(n);
 	denominator.resize(n);
 	for (int i = 0; i < n; ++i) {
-		numerator[i] = xk[i] - (i + 1);
-		denominator[i] = i + 1;
+		numerator[i] = xk[i] - (i + 1);	// x - x*
+		denominator[i] = i + 1;			// x
 	}
-
 
 	return calcNormE(numerator) / (calcNormE(denominator) * calcRelativeDiscrepancy());
 }

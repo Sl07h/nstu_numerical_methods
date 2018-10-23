@@ -4,6 +4,8 @@
 
 void main() {
 
+	std::ofstream fout;
+	fout.open("research.txt");
 	SLAE slae;
 
 	//slae.readMatrixFromFile("A.txt");
@@ -11,17 +13,18 @@ void main() {
 	slae.convMatrixToDense();
 	slae.generateVectX(slae.getDimention());
 	slae.mult();
-	
+
 	slae.generateInitualGuess(slae.getDimention());
-	//slae.generateMatrixWithDiagonal(8, 3);
-	for (int i = 0; i < 10000; ++i)
-	slae.calcIterative(1, 0.5);
-	//slae.GaussSeildel(0.2);
-	slae.setE(0.00001);
-	slae.setMaxiter(1000);
+
+
+	slae.setE(0.0001);
+	slae.setMaxiter(100000);
+
+	cout << slae.calcIterative(1, 0.1) << endl;
 	
-	//cout << slae.findOptimalW(1) << endl;
-	//slae.calcIterative(1, 0.5);
+
+	cout << slae.findOptimalW(1, true, fout) << endl;
+	
 	slae.writeDenseMatrixToFile("x.txt");
-	system("pause");
+	fout.close();
 }

@@ -1,7 +1,7 @@
 #include "matrix.h"
 
 
-// Ââîä 7-äèàãîíàëüíîé ìàòðèöû èç ôàéëà
+// Ð’Ð²Ð¾Ð´ 7-Ð´Ð¸Ð°Ð³Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ð¹ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñ‹ Ð¸Ð· Ñ„Ð°Ð¹Ð»Ð°
 int matrix::readMatrixFromFile(char * fileName) {
 
 	std::ifstream fin;
@@ -45,7 +45,7 @@ int matrix::readMatrixFromFile(char * fileName) {
 }
 
 
-// Âûâîä 7-ìè äèàãîíàëüíîé ìàòðèöû â ôàéë
+// Ð’Ñ‹Ð²Ð¾Ð´ 7-Ð¼Ð¸ Ð´Ð¸Ð°Ð³Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ð¹ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñ‹ Ð² Ñ„Ð°Ð¹Ð»
 void matrix::writeMatrixToFile(char * fileName) {
 
 	std::ofstream fout;
@@ -88,7 +88,7 @@ void matrix::writeMatrixToFile(char * fileName) {
 }
 
 
-// Ñîçäà¸ì ìàòðèöó A(k)
+// Ð¡Ð¾Ð·Ð´Ð°Ñ‘Ð¼ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñƒ A(k)
 void matrix::generateMatrixWith7Diagonals(int new_n, int new_m) {
 
 	n = new_n;
@@ -126,12 +126,12 @@ void matrix::generateMatrixWith7Diagonals(int new_n, int new_m) {
 }
 
 
-// Ðàññ÷¸ò ñóììû ýëåìåíòîâ ñòðîêè ïðè ãåíåðàöèè ìàòðèöû A(k)
+// Ð Ð°ÑÑÑ‡Ñ‘Ñ‚ ÑÑƒÐ¼Ð¼Ñ‹ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ð¾Ð² ÑÑ‚Ñ€Ð¾ÐºÐ¸ Ð¿Ñ€Ð¸ Ð³ÐµÐ½ÐµÑ€Ð°Ñ†Ð¸Ð¸ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñ‹ A(k)
 real matrix::calcAii(int i) {
 
 	real_sum sum = 0;
 
-	if (i >= 1) { // Íèæíèé òðåóãîëüíèê
+	if (i >= 1) { // ÐÐ¸Ð¶Ð½Ð¸Ð¹ Ñ‚Ñ€ÐµÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸Ðº
 		sum += al1[i - 1];
 		if (i >= m + 2) {
 			sum += al2[i - m - 2];
@@ -142,7 +142,7 @@ real matrix::calcAii(int i) {
 
 	sum += di[i];
 
-	if (i < n - 1) { // Âåðõíèé òðåóãîëüíèê
+	if (i < n - 1) { // Ð’ÐµÑ€Ñ…Ð½Ð¸Ð¹ Ñ‚Ñ€ÐµÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸Ðº
 		sum += au1[i];
 		if (i < n - m - 2) {
 			sum += au2[i];

@@ -9,7 +9,7 @@ public:
 	void getVectX(vector <real> &x) { x = F; };
 	
 	void generateVectX(int size);
-	// Создаём начальное приближение (нулевой вектор)
+	// РЎРѕР·РґР°С‘Рј РЅР°С‡Р°Р»СЊРЅРѕРµ РїСЂРёР±Р»РёР¶РµРЅРёРµ (РЅСѓР»РµРІРѕР№ РІРµРєС‚РѕСЂ)
 	void generateInitualGuess(int size) { xk.clear(); xk.resize(size, real(0)); }
 	void writeVectToFile(std::ofstream& fout, char *str);
 	void writexCompError(std::ofstream& fout, char *str);

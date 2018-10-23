@@ -3,7 +3,7 @@
 
 
 
-// Creating vector xk* = (1,2,...n)'
+// Создаём вектор xk* = (1,2,...n)'
 void vect::generateVectX(int size) {
 
 	xk.resize(size);
@@ -15,7 +15,7 @@ void vect::generateVectX(int size) {
 
 
 
-// Output of results
+// Вывод вектора xk в файл
 void vect::writeVectToFile(std::ofstream& fout, char *str) {
 
 	fout << str << endl;
@@ -26,7 +26,7 @@ void vect::writeVectToFile(std::ofstream& fout, char *str) {
 }
 
 
-// generates 1/3 of table in research
+// Вывод вектора xk и погрешности xk - x* в файл
 void vect::writeTableToFile(std::ofstream& fout) {
 
 	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
@@ -43,7 +43,7 @@ void vect::writeTableToFile(std::ofstream& fout) {
 }
 
 
-// Output of computational error
+// Вывод погрешности
 void vect::writexCompError(std::ofstream& fout, char *str) {
 
 	fout << str << endl;
@@ -54,7 +54,7 @@ void vect::writexCompError(std::ofstream& fout, char *str) {
 }
 
 
-// Check if xk is almost equal to (1,2,...,n)'
+// Проверяем блисзок ли вектор xk к вектору x* = (1,2,...,n)'
 bool vect::isXcorrect() {
 
 	for (int i = 0; i < xk.size();++i) {

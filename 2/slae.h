@@ -16,10 +16,12 @@ public:
 	void Jacobi(real w);
 	void GaussSeildel(real w);
 	int calcIterative(int mode, real w);
-	real findOptimalW(int mode);
+	real findOptimalW(int mode, bool doWriteLog);
 
-	/* 4 следующие метода класса производят ускорение программы 
-	за счёт кэширования при последовательной работе с векторами	*/
+	real findOptimalW(int mode, bool doWriteLog, std::ofstream & fout);
+
+	/* 4 СЃР»РµРґСѓСЋС‰РёРµ РјРµС‚РѕРґР° РєР»Р°СЃСЃР° РїСЂРѕРёР·РІРѕРґСЏС‚ СѓСЃРєРѕСЂРµРЅРёРµ РїСЂРѕРіСЂР°РјРјС‹
+	Р·Р° СЃС‡С‘С‚ РєСЌС€РёСЂРѕРІР°РЅРёСЏ РїСЂРё РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕР№ СЂР°Р±РѕС‚Рµ СЃ РІРµРєС‚РѕСЂР°РјРё	*/
 	vector <real_sum>& sumAtlowerTrianByDiag(vector <real>& line);
 	vector <real_sum>& sumAtUpperTrianByDiag(vector <real>& line);
 	void BoostedJacobi(real w);
