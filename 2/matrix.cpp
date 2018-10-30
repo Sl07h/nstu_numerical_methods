@@ -52,7 +52,7 @@ void matrix::writeMatrixToFile(char * fileName) {
 	fout.open(fileName);
 
 
-	fout << n << m;
+	fout << n << " " << m << " " << endl;
 	for (int i = 0; i < n; ++i)
 		fout << di[i] << " ";
 	fout << endl;
@@ -91,8 +91,11 @@ void matrix::writeMatrixToFile(char * fileName) {
 // Создаём матрицу A(k)
 void matrix::generateMatrixWith7Diagonals(int new_n, int new_m) {
 
+	//auto getNum = [](int sign) -> int { return sign * rand() % 5; };
+	//
 	n = new_n;
 	m = new_m;
+	di.clear();
 	di.resize(n, 0);
 	au1.resize(n - 1);
 	al1.resize(n - 1);
@@ -120,7 +123,7 @@ void matrix::generateMatrixWith7Diagonals(int new_n, int new_m) {
 
 
 	for (int i = 0; i < di.size(); ++i)
-		di[i] -= calcAii(i);
+		di[i] = -calcAii(i);
 
 	di[0]++;
 }
@@ -152,4 +155,24 @@ real matrix::calcAii(int i) {
 	}
 
 	return sum;
+}
+
+
+// Меняем знак внедиагональных элементов на противоположный
+void matrix::invertSigns() {
+
+	for (int i = 0; i < al1.size(); ++i) {
+		au1[i] = abs(au1[i]);
+		al1[i] = abs(al1[i]);
+	}
+
+	for (int i = 0; i < al2.size(); ++i) {
+		au2[i] = abs(au2[i]);
+		al2[i] = abs(al2[i]);
+	}
+
+	for (int i = 0; i < al3.size(); ++i) {
+		au3[i] = abs(au3[i]);
+		al3[i] = abs(al3[i]);
+	}
 }

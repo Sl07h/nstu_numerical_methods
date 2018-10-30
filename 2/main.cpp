@@ -4,27 +4,57 @@
 
 void main() {
 
-	std::ofstream fout;
-	fout.open("research.txt");
+	std::ofstream fout_res;
 	SLAE slae;
 
-	//slae.readMatrixFromFile("A.txt");
-	slae.generateMatrixWith7Diagonals(10, 5);
+
+	slae.generateMatrixWith7Diagonals(10, 3);
+	slae.writeMatrixToFile("A.txt");
 	slae.convMatrixToDense();
+	slae.writeDenseMatrixToFile("A_dense.txt");
+
+	slae.invertSigns();
+	slae.writeMatrixToFile("B.txt");
+	slae.convMatrixToDense();
+	slae.writeDenseMatrixToFile("B_dense.txt");
+
+
+
+	fout_res.open("A_Jacobi.txt");
+	slae.readMatrixFromFile("A.txt");
 	slae.generateVectX(slae.getDimention());
 	slae.mult();
+	slae.setE(1e-10);
+	slae.setMaxiter(200000);
+	cout << slae.findOptimalW(1, fout_res) << endl;
+	fout_res.close();
 
-	slae.generateInitualGuess(slae.getDimention());
+
+	fout_res.open("A_GaussSeidel.txt");
+	slae.generateVectX(slae.getDimention());
+	slae.mult();
+	slae.setE(1e-10);
+	slae.setMaxiter(200000);
+	cout << slae.findOptimalW(2, fout_res) << endl;
+	fout_res.close();
 
 
-	slae.setE(0.0001);
-	slae.setMaxiter(100000);
 
-	cout << slae.calcIterative(1, 0.1) << endl;
-	
+	fout_res.open("B_Jacobi.txt");
+	slae.readMatrixFromFile("B.txt");
+	slae.generateVectX(slae.getDimention());
+	slae.mult();
+	slae.setE(1e-10);
+	slae.setMaxiter(200000);
+	cout << slae.findOptimalW(1, fout_res) << endl;
+	fout_res.close();
 
-	cout << slae.findOptimalW(1, true, fout) << endl;
-	
-	slae.writeDenseMatrixToFile("x.txt");
-	fout.close();
+
+	fout_res.open("B_GaussSeidel.txt");
+	slae.generateVectX(slae.getDimention());
+	slae.mult();
+	slae.setE(1e-10);
+	slae.setMaxiter(200000);
+	cout << slae.findOptimalW(2, fout_res) << endl;
+	fout_res.close();
 }

@@ -120,12 +120,15 @@ void SLAE::mult() {
 void SLAE::Jacobi(real w) {
 
 	real_sum sum;
+	vector <real> xk1;
+	xk1.resize(n);
 
 	for (int i = 0; i < n; ++i) {
 		sum = multLine(xk, i, 3);
-		xk[i] += w * (F[i] - sum) / di[i];
-		//xk1[i] = xk[i] + w * (F[i] - sum) / di[i];
+		//xk[i] += w * (F[i] - sum) / di[i];
+		xk1[i] = xk[i] + w * (F[i] - sum) / di[i];
 	}
+	xk = xk1;
 }
 
 
@@ -160,13 +163,15 @@ int SLAE::calcIterative(int mode, real w) {
 
 		++i;
 	}
+
+
 	return i;
 }
 
 
 
 // Поиск оптимального веса
-real SLAE::findOptimalW(int mode, bool doWriteLog, std::ofstream& fout) {
+real SLAE::findOptimalW(int mode, std::ofstream& fout) {
 
 	real optimalW, tmpW;
 	int max_i, min_i = maxiter, tmp_i;
@@ -175,33 +180,22 @@ real SLAE::findOptimalW(int mode, bool doWriteLog, std::ofstream& fout) {
 
 	for (int i = 0; i < max_i; ++i) {
 
+		generateInitualGuess(getDimention());
 		tmpW = real(i) / 100;
 		tmp_i = calcIterative(mode, tmpW);
-
+		//cout << tmpW << "  " << calcRelativeDiscrepancy() << endl;
 		if (tmp_i < min_i) {
 			min_i = tmp_i;
 			optimalW = tmpW;
 		}
 
 
-		if (doWriteLog) {
-
-			fout << std::fixed << std::setprecision(2) << tmpW << "\t";
-			fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
-			for (int i = 0; i < xk.size();++i)
-				fout << xk[i] << " ";
-			fout << " \t";
-
-			fout << std::scientific;
-			for (int i = 0; i < xk.size();++i)
-				fout << xk[i] - real(i + 1) << " ";
-			fout << " \t";
-
-			fout << tmp_i << "\t";
-			fout << calcCondNumber() << endl;
-		}
+		if (i % 10 == 0) // Выводим таблицу с точность 0.1
+			writeTableToFile(fout, 1, tmpW, tmp_i, calcCondNumber());
 	}
-
+	generateInitualGuess(getDimention());
+	min_i = calcIterative(mode, optimalW);
+	writeTableToFile(fout, 2, optimalW, min_i, calcCondNumber());
 
 	return optimalW;
 }
@@ -290,11 +284,11 @@ void SLAE::BoostedGaussSeildel(real w) {
 // Вычисление нормы в Евклидовом пространстве
 real SLAE::calcNormE(vector <real> &x) {
 
-	real_sum norma = 0;
+	real_sum normE = 0;
 	for (int i = 0; i < n; i++)
-		norma += x[i] * x[i];
+		normE += x[i] * x[i];
 
-	return sqrt(norma);
+	return sqrt(normE);
 }
 
 
@@ -307,8 +301,9 @@ real SLAE::calcRelativeDiscrepancy() {
 	mult(); // F = A*xk
 
 	for (int i = 0; i < n; ++i)
-		numerator[i] = denominator[i] - F[i]; // ||F - Axk||
+		numerator[i] = denominator[i] - F[i]; // F - A*xk
 
+	// || F - A*xk || / || F ||
 	real res = calcNormE(numerator) / calcNormE(denominator);
 	F = denominator;
 	return res;

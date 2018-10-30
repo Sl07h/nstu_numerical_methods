@@ -11,6 +11,7 @@ public:
 	void setE(real new_E) { E = new_E; }
 	void setMaxiter(real new_maxiter) { maxiter = new_maxiter; }
 	void generateMatrixWith7Diagonals(int new_n, int new_m);
+	void invertSigns();
 
 protected:
 

@@ -16,9 +16,7 @@ public:
 	void Jacobi(real w);
 	void GaussSeildel(real w);
 	int calcIterative(int mode, real w);
-	real findOptimalW(int mode, bool doWriteLog);
-
-	real findOptimalW(int mode, bool doWriteLog, std::ofstream & fout);
+	real findOptimalW(int mode, std::ofstream& fout);
 
 	/* 4 следующие метода класса производят ускорение программы
 	за счёт кэширования при последовательной работе с векторами	*/

@@ -15,46 +15,29 @@ void vect::generateVectX(int size) {
 
 
 
-// Вывод вектора xk в файл
-void vect::writeVectToFile(std::ofstream& fout, char *str) {
 
-	fout << str << endl;
+// generates 1/3 of table in research
+void vect::writeTableToFile(std::ofstream& fout, int presision, real w, int iterations, int condNumber) {
+
+	fout << std::fixed << std::setprecision(presision) << w << "\t";
 	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
-	for (int i = 0; i < xk.size();++i) {
-		fout << xk[i] << endl;
-	}
-}
-
-
-// Вывод вектора xk и погрешности xk - x* в файл
-void vect::writeTableToFile(std::ofstream& fout) {
-
-	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
-	for (int i = 0; i < xk.size();++i) {
+	for (int i = 0; i < xk.size();++i)
 		fout << xk[i] << " ";
-	}
 	fout << " \t";
 
 	fout << std::scientific;
-	for (int i = 0; i < xk.size();++i) {
+	for (int i = 0; i < xk.size();++i)
 		fout << xk[i] - real(i + 1) << " ";
-	}
-	fout << " \t" << endl;
+	fout << " \t";
+
+	fout << iterations << "\t";
+	fout << condNumber << endl;
 }
 
 
-// Вывод погрешности
-void vect::writexCompError(std::ofstream& fout, char *str) {
-
-	fout << str << endl;
-	fout << std::scientific;
-	for (int i = 0; i < xk.size(); ++i) {
-		fout << xk[i] - real(i + 1) << endl;
-	}
-}
 
 
-// Проверяем блисзок ли вектор xk к вектору x* = (1,2,...,n)'
+// Проверяем насколько xk  близко к вектору xk* = (1,2,...,n)'
 bool vect::isXcorrect() {
 
 	for (int i = 0; i < xk.size();++i) {
