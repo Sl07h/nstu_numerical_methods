@@ -8,7 +8,9 @@ void main() {
 	SLAE slae;
 
 
-	slae.generateMatrixWith7Diagonals(10, 3);
+	/*slae.generateMatrixWith7Diagonals(10, 3);
+	slae.setE(1e-10);
+	slae.setMaxiter(200000);
 	slae.writeMatrixToFile("A.txt");
 	slae.convMatrixToDense();
 	slae.writeDenseMatrixToFile("A_dense.txt");
@@ -16,7 +18,7 @@ void main() {
 	slae.invertSigns();
 	slae.writeMatrixToFile("B.txt");
 	slae.convMatrixToDense();
-	slae.writeDenseMatrixToFile("B_dense.txt");
+	slae.writeDenseMatrixToFile("B_dense.txt");*/
 
 
 
@@ -24,8 +26,7 @@ void main() {
 	slae.readMatrixFromFile("A.txt");
 	slae.generateVectX(slae.getDimention());
 	slae.mult();
-	slae.setE(1e-10);
-	slae.setMaxiter(200000);
+	slae.writeFToFile("F_A.txt");
 	cout << slae.findOptimalW(1, fout_res) << endl;
 	fout_res.close();
 
@@ -33,8 +34,6 @@ void main() {
 	fout_res.open("A_GaussSeidel.txt");
 	slae.generateVectX(slae.getDimention());
 	slae.mult();
-	slae.setE(1e-10);
-	slae.setMaxiter(200000);
 	cout << slae.findOptimalW(2, fout_res) << endl;
 	fout_res.close();
 
@@ -44,8 +43,7 @@ void main() {
 	slae.readMatrixFromFile("B.txt");
 	slae.generateVectX(slae.getDimention());
 	slae.mult();
-	slae.setE(1e-10);
-	slae.setMaxiter(200000);
+	slae.writeFToFile("F_B.txt");
 	cout << slae.findOptimalW(1, fout_res) << endl;
 	fout_res.close();
 
@@ -53,8 +51,6 @@ void main() {
 	fout_res.open("B_GaussSeidel.txt");
 	slae.generateVectX(slae.getDimention());
 	slae.mult();
-	slae.setE(1e-10);
-	slae.setMaxiter(200000);
 	cout << slae.findOptimalW(2, fout_res) << endl;
 	fout_res.close();
 }

@@ -13,7 +13,16 @@ void vect::generateVectX(int size) {
 }
 
 
+// Вывод вектора F в файл 
+void vect::writeFToFile(char *fileName) {
 
+	std::ofstream fout;
+	fout.open(fileName);
+
+	for (int i = 0; i < F.size();++i)
+		fout << int(F[i]) << endl;
+	fout.close();
+}
 
 
 // generates 1/3 of table in research

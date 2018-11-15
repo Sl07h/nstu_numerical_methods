@@ -6,7 +6,6 @@
 class SLAE : public matrix, public vect {
 
 public:
-
 	void convMatrixToDense();
 	void writeDenseMatrixToFile(char* fileName);
 
@@ -18,13 +17,6 @@ public:
 	int calcIterative(int mode, real w);
 	real findOptimalW(int mode, std::ofstream& fout);
 
-	/* 4 следующие метода класса производят ускорение программы
-	за счёт кэширования при последовательной работе с векторами	*/
-	vector <real_sum>& sumAtlowerTrianByDiag(vector <real>& line);
-	vector <real_sum>& sumAtUpperTrianByDiag(vector <real>& line);
-	void BoostedJacobi(real w);
-	void BoostedGaussSeildel(real w);
-	
 
 protected:
 	real calcNormE(vector <real> &x);

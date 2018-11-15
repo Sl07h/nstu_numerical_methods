@@ -55,7 +55,7 @@ void SLAE::writeDenseMatrixToFile(char * fileName) {
 // Умножение i-й строки матрицы на вектор
 real SLAE::multLine(vector <real> &line, int i, int mode) {
 
-	real_sum sum = 0;
+	real sum = 0;
 	if (mode == 1 || mode == 3) {	// Нижний треугольник
 
 		if (i > 0) {
@@ -91,27 +91,37 @@ real SLAE::multLine(vector <real> &line, int i, int mode) {
 
 // Умножение матрицы на вектор
 void SLAE::mult() {
+	
+	int index;
 	F.clear();
 	F.resize(n, 0);
 	// Нижний треугольник
-	for (int i = 0; i < al1.size(); ++i)
-		F[i + 1] += al1[i] * xk[i];
-	for (int i = 0; i < al2.size(); ++i)
-		F[i + m + 2] += al2[i] * xk[i];
-	for (int i = 0; i < al3.size(); ++i)
-		F[i + m + 3] += al3[i] * xk[i];
+	index = 1;
+	for (int i = 0; i < al1.size(); ++i, ++index)
+		F[index] += al1[i] * xk[i];
+	index = m + 2;
+	for (int i = 0; i < al2.size(); ++i, ++index)
+		F[index] += al2[i] * xk[i];
+	index = m + 3;
+	for (int i = 0; i < al3.size(); ++i, ++index)
+		F[index] += al3[i] * xk[i];
+
 
 	// Главная диагональ
 	for (int i = 0; i < di.size(); ++i)
 		F[i] += di[i] * xk[i];
 
+
 	// Верхний треугольник
-	for (int i = 0; i < au1.size(); ++i)
-		F[i] += au1[i] * xk[i + 1];
-	for (int i = 0; i < au2.size(); ++i)
-		F[i] += au2[i] * xk[i + m + 2];
-	for (int i = 0; i < au3.size(); ++i)
-		F[i] += au3[i] * xk[i + m + 3];
+	index = 1;
+	for (int i = 0; i < au1.size(); ++i, ++index)
+		F[i] += au1[i] * xk[index];
+	index = m + 2;
+	for (int i = 0; i < au2.size(); ++i, ++index)
+		F[i] += au2[i] * xk[index];
+	index = m + 3;
+	for (int i = 0; i < au3.size(); ++i, ++index)
+		F[i] += au3[i] * xk[index];
 }
 
 
@@ -119,7 +129,7 @@ void SLAE::mult() {
 // Используется общая память для xk и xk1
 void SLAE::Jacobi(real w) {
 
-	real_sum sum;
+	real sum;
 	vector <real> xk1;
 	xk1.resize(n);
 
@@ -135,7 +145,7 @@ void SLAE::Jacobi(real w) {
 // Метод Гаусса-Зейделя. 0 < w < 2
 void SLAE::GaussSeildel(real w) {
 
-	real_sum sum;
+	real sum;
 	vector <real> xk1 = xk;
 
 	for (int i = 0; i < n; ++i) {
@@ -183,7 +193,6 @@ real SLAE::findOptimalW(int mode, std::ofstream& fout) {
 		generateInitualGuess(getDimention());
 		tmpW = real(i) / 100;
 		tmp_i = calcIterative(mode, tmpW);
-		//cout << tmpW << "  " << calcRelativeDiscrepancy() << endl;
 		if (tmp_i < min_i) {
 			min_i = tmp_i;
 			optimalW = tmpW;
@@ -202,89 +211,10 @@ real SLAE::findOptimalW(int mode, std::ofstream& fout) {
 
 
 
-vector <real_sum>& SLAE::sumAtlowerTrianByDiag(vector <real>& line) {
-
-	vector <real_sum> sum;
-	sum.resize(n, 0);
-
-	// Нижний треугольник
-	for (int i = 0; i < al1.size(); ++i)
-		sum[i + 1] += al1[i] * line[i];
-	for (int i = 0; i < al2.size(); ++i)
-		sum[i + m + 2] += al2[i] * line[i];
-	for (int i = 0; i < al3.size(); ++i)
-		sum[i + m + 3] += al3[i] * line[i];
-
-	return sum;
-}
-
-
-
-vector <real_sum>& SLAE::sumAtUpperTrianByDiag(vector <real>& line) {
-
-	vector <real_sum> sum;
-	sum.resize(n, 0);
-
-	// Главная диагональ
-	for (int i = 0; i < di.size(); ++i)
-		F[i] += di[i] * line[i];
-
-	// Верхний треугольник
-	for (int i = 0; i < au1.size(); ++i)
-		F[i] += au1[i] * line[i + 1];
-	for (int i = 0; i < au2.size(); ++i)
-		F[i] += au2[i] * line[i + m + 2];
-	for (int i = 0; i < au3.size(); ++i)
-		F[i] += au3[i] * line[i + m + 3];
-
-	return sum;
-}
-
-
-// Метод Якоби с кешированием. 0 < w < 1
-void SLAE::BoostedJacobi(real w) {
-
-	vector <real> xk1, sum1, sum2;
-	xk1.resize(n, 0);
-	sum1 = sumAtlowerTrianByDiag(xk);
-	sum2 = sumAtUpperTrianByDiag(xk);
-
-	generateInitualGuess(n); // Создаём начальное приближение
-
-	for (int i = 0; i < n; ++i) {
-		xk1[i] = xk[i] + w * (F[i] - sum1[i] - sum2[i]) / di[i];
-
-	}
-
-	xk = xk1;
-}
-
-
-
-// Метод Гаусса-Зейделя с кешированием. 0 < w < 2
-void SLAE::BoostedGaussSeildel(real w) {
-
-	real_sum sum = 0;
-	vector <real> xk1, vecOfSum;
-	xk1.resize(n, 0);
-	vecOfSum = sumAtUpperTrianByDiag(xk);
-
-
-	for (int i = 0; i < n; ++i) {
-
-		sum = multLine(xk1, i, 1);
-
-		xk1[i] = xk[i] + w * (F[i] - vecOfSum[i] - sum) / di[i];
-	}
-	xk = xk1;
-}
-
-
-
 // Вычисление нормы в Евклидовом пространстве
 real SLAE::calcNormE(vector <real> &x) {
 
-	real_sum normE = 0;
+	real normE = 0;
 	for (int i = 0; i < n; i++)
 		normE += x[i] * x[i];
 

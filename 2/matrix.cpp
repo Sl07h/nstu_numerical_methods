@@ -8,6 +8,8 @@ int matrix::readMatrixFromFile(char * fileName) {
 	fin.open(fileName);
 
 	fin >> n >> m;
+	fin >> E >> maxiter;
+
 	di.resize(n);
 	for (int i = 0; i < n; ++i)
 		fin >> di[i];
@@ -51,35 +53,37 @@ void matrix::writeMatrixToFile(char * fileName) {
 	std::ofstream fout;
 	fout.open(fileName);
 
+	fout << n << " " << m << endl;
+	fout << E << " " << maxiter << endl;
 
-	fout << n << " " << m << " " << endl;
 	for (int i = 0; i < n; ++i)
 		fout << di[i] << " ";
 	fout << endl;
 
 
-	for (int i = 0; i < n - 1; ++i)
+	for (int i = 0; i < al1.size(); ++i)
 		fout << al1[i] << " ";
 	fout << endl;
 
-	for (int i = 0; i < n - m - 2; ++i)
+	for (int i = 0; i < al2.size(); ++i)
 		fout << al2[i] << " ";
 	fout << endl;
 
-	for (int i = 0; i < n - m - 3; ++i)
+	for (int i = 0; i < al3.size(); ++i)
 		fout << al3[i] << " ";
 	fout << endl;
 
 
-	for (int i = 0; i < n - 1; ++i)
+
+	for (int i = 0; i < au1.size(); ++i)
 		fout << au1[i] << " ";
 	fout << endl;
 
-	for (int i = 0; i < n - m - 2; ++i)
+	for (int i = 0; i < au2.size(); ++i)
 		fout << au2[i] << " ";
 	fout << endl;
 
-	for (int i = 0; i < n - m - 3; ++i)
+	for (int i = 0; i < au3.size(); ++i)
 		fout << au3[i] << " ";
 	fout << endl;
 
@@ -91,8 +95,6 @@ void matrix::writeMatrixToFile(char * fileName) {
 // Создаём матрицу A(k)
 void matrix::generateMatrixWith7Diagonals(int new_n, int new_m) {
 
-	//auto getNum = [](int sign) -> int { return sign * rand() % 5; };
-	//
 	n = new_n;
 	m = new_m;
 	di.clear();
@@ -132,7 +134,7 @@ void matrix::generateMatrixWith7Diagonals(int new_n, int new_m) {
 // Рассчёт суммы элементов строки при генерации матрицы A(k)
 real matrix::calcAii(int i) {
 
-	real_sum sum = 0;
+	real sum = 0;
 
 	if (i >= 1) { // Нижний треугольник
 		sum += al1[i - 1];
