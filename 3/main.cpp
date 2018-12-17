@@ -9,12 +9,12 @@ int main() {
 	//std::numeric_limits<real>::digits10 + 1
 	
 	SLAE slae;
-	cout << std::fixed << std::setprecision(4);
-	fout00 << std::fixed << std::setprecision(4);
-	fout11 << std::fixed << std::setprecision(4);
-	fout12 << std::fixed << std::setprecision(4);
-	fout21 << std::fixed << std::setprecision(4);
-	fout22 << std::fixed << std::setprecision(4);
+	cout << std::fixed << std::setprecision(7);
+	fout00 << std::fixed << std::setprecision(7);
+	fout11 << std::fixed << std::setprecision(7);
+	fout12 << std::fixed << std::setprecision(7);
+	fout21 << std::fixed << std::setprecision(7);
+	fout22 << std::fixed << std::setprecision(7);
 	
 	fout00.open("debugging.txt");
  	fout11.open("table.txt");

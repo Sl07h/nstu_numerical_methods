@@ -14,7 +14,7 @@ public:
 	void multAAndX();
 
 
-	void getVectX(vector <real> &x) { x = F; };
+	void getVectX(vec &x) { x = F; };
 	void generateVectX(int size);
 	void writeXToFile(const char *fileName);
 	void writeXToStream(std::ofstream& fout);
@@ -25,8 +25,8 @@ public:
 	void decomposionD();
 	void decomposionChol();
 	void decomposionLUsq();
-	vector <real> execDirectTraversal(const vector <real> &_F);
-	vector <real> execReverseTraversal(const vector <real> &_y);
+	vec execDirectTraversal(const vec &_F);
+	vec execReverseTraversal(const vec &_y);
 	void createHilbertMatrix(int size);
 
 	void LOS(std::ofstream& fout);
@@ -37,22 +37,21 @@ public:
 	void setE(real new_E) { E = new_E; }
 
 private:
-	vector <real> multA(const vector <real>&x);
-	vector <real> multD(const vector <real>&x);
-	vector <real> multLUsq(const vector <real>&x);
+	vec multA(const vec&x);
+	vec multD(const vec&x);
+	vec multLUsq(const vec&x);
 
 
 	real calcRelativeDiscrepancy();
-	real calcNormE(vector <real> &x);
-	real calcScalarProduct(const vector <real> &a, const vector <real> &b);
+	real calcNormE(vec &x);
 
 	
 
 	vector <vector <double>> L, U;
-	vector <real> di, al, au, di_f, al_f, au_f;
+	vec di, al, au, di_f, al_f, au_f;
 	vector <int> ia, ja;
 	int n, maxiter;
 	real E;
-	vector <real> x, r, z, p, F, Ftmp;
+	vec x, r, z, p, F, Ftmp;
 
 };
