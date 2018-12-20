@@ -2,13 +2,12 @@
 #include "slae.h"
 
 
-// Р’РІРѕРґ РЎР›РђРЈ: РјР°С‚СЂРёС†С‹ A Рё РІРµРєС‚РѕСЂР° y
-int SLAE::readSLAEfromFiles(const string &folderName) {
+// Ввод СЛАУ: матрицы A и вектора y
+int SLAE::readSLAEfromFiles(const string &folderName, bool firstNumberIsOne) {
 
 	std::ifstream fin;
 	fin.open(folderName + "/" + "kuslau.txt");
 	fin >> n >> maxiter >> E;
-	cout << E << endl;
 	fin.close();
 	x.resize(n, 0);
 	r.resize(n, 0);
@@ -28,6 +27,8 @@ int SLAE::readSLAEfromFiles(const string &folderName) {
 	ia.resize(n + 1);
 	for (int i = 0; i < ia.size(); ++i) {
 		fin >> ia[i];
+		if (firstNumberIsOne)
+			ia[i]--;
 	}
 	fin.close();
 
@@ -35,6 +36,8 @@ int SLAE::readSLAEfromFiles(const string &folderName) {
 	ja.resize(ia.back());
 	for (int i = 0; i < ja.size(); ++i) {
 		fin >> ja[i];
+		if (firstNumberIsOne)
+			ja[i]--;
 	}
 	fin.close();
 
@@ -62,11 +65,67 @@ int SLAE::readSLAEfromFiles(const string &folderName) {
 	}
 	fin.close();
 
+
 	return 0;
 }
 
 
-// Р’С‹РІРѕРґ РїР»РѕС‚РЅРѕР№ РјР°С‚СЂРёС†С‹ L
+// Ввод СЛАУ: матрицы A и вектора y
+void SLAE::writeSLAEToFiles(const string &folderName) {
+
+	std::ofstream fout;
+	fout.open(folderName + "/" + "kuslau.txt");
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1)
+		<< n << endl
+		<< maxiter << endl
+		<< E << endl;
+	fout.close();
+
+
+	fout.open(folderName + "/" + "di.txt");
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
+	for (int i = 0; i < di.size(); ++i) {
+		fout << di[i] << endl;
+	}
+	fout.close();
+
+	fout.open(folderName + "/" + "ig.txt");
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
+	for (int i = 0; i < ia.size(); ++i) {
+		fout << ia[i] << endl;
+	}
+	fout.close();
+
+	fout.open(folderName + "/" + "jg.txt");
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
+	for (int i = 0; i < ja.size(); ++i) {
+		fout << ja[i] << endl;
+	}
+	fout.close();
+
+	fout.open(folderName + "/" + "ggl.txt");
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1); 
+	for (int i = 0; i < al.size(); ++i) {
+		fout << al[i] << endl;
+	}
+	fout.close();
+
+	fout.open(folderName + "/" + "ggu.txt");
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1); 
+	for (int i = 0; i < au.size(); ++i) {
+		fout << au[i] << endl;
+	}
+	fout.close();
+
+	fout.open(folderName + "/" + "pr.txt");
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
+	for (int i = 0; i < F.size(); ++i) {
+		fout << F[i] << endl;
+	}
+	fout.close();
+}
+
+// Вывод плотной матрицы L
 void SLAE::writeDenseMatrixLToFile(std::ofstream& fout, const char *str) {
 
 	//fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
@@ -81,7 +140,7 @@ void SLAE::writeDenseMatrixLToFile(std::ofstream& fout, const char *str) {
 }
 
 
-// Р’С‹РІРѕРґ РїР»РѕС‚РЅРѕР№ РјР°С‚СЂРёС†С‹ U
+// Вывод плотной матрицы U
 void SLAE::writeDenseMatrixUToFile(std::ofstream& fout, const char *str) {
 
 	//fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
@@ -96,7 +155,7 @@ void SLAE::writeDenseMatrixUToFile(std::ofstream& fout, const char *str) {
 }
 
 
-// РџСЂРµРѕР±СЂР°Р·СѓРµРј СЂР°Р·СЂСЏР¶РµРЅРЅСѓСЋ РјР°С‚СЂРёС†Сѓ РІ РїР»РѕС‚РЅС‹Р№ С„РѕСЂРјР°С‚
+// Преобразуем разряженную матрицу в плотный формат
 void SLAE::convAToDense() {
 
 	L.clear();
@@ -111,7 +170,7 @@ void SLAE::convAToDense() {
 		int i0 = ia[i];
 		int i1 = ia[i + 1];
 
-		for (int k = i0; k < i1; ++k) { // РРґС‘Рј РїРѕ РІСЃРµРјСѓ РїСЂРѕС„РёР»СЋ
+		for (int k = i0; k < i1; ++k) { // Идём по всему профилю
 
 			L[i][ja[k]] = al[k];
 			L[ja[k]][i] = au[k];
@@ -120,7 +179,7 @@ void SLAE::convAToDense() {
 }
 
 
-// РџСЂРµРѕСЂР°Р·СѓРµРј РјР°С‚СЂРёС†С‹ L Рё U РІ РїР»РѕС‚РЅС‹Р№ С„РѕСЂРјР°С‚
+// Преоразуем матрицы L и U в плотный формат
 void SLAE::convLUToDense() {
 
 	L.clear();
@@ -154,7 +213,7 @@ void SLAE::multAAndX() {
 }
 
 
-// A*x = b, РіРґРµ x - РїСЂРѕРёР·РІРѕР»СЊРЅС‹Р№ РІРµРєС‚РѕСЂ
+// A*x = b, где x - произвольный вектор
 vec SLAE::multA(const vec&x) {
 
 	vec result(n);
@@ -175,7 +234,7 @@ vec SLAE::multA(const vec&x) {
 	return result;
 }
 
-// A*x = b, РіРґРµ x - РїСЂРѕРёР·РІРѕР»СЊРЅС‹Р№ РІРµРєС‚РѕСЂ
+// A*x = b, где x - произвольный вектор
 vec SLAE::multD(const vec&x) {
 
 	vec result(n);
@@ -187,32 +246,7 @@ vec SLAE::multD(const vec&x) {
 }
 
 
-// A*x = b, РіРґРµ x - РїСЂРѕРёР·РІРѕР»СЊРЅС‹Р№ РІРµРєС‚РѕСЂ
-vec SLAE::multLUsq(const vec&x) {
-
-	vec result(n, 0);
-
-	for (int i = 0; i < n; ++i) {
-
-		int i0 = ia[i];
-		int i1 = ia[i + 1];
-
-		for (int k = i0; k < i1; ++k) {
-
-			result[i] += al_f[k] * x[ja[k]];
-			result[ja[k]] += au_f[k] * x[i];
-		}
-	}
-
-	for (int i = 0; i < n; ++i) {
-		result[i] += di_f[i] * x[i];
-	}
-
-	return result;
-}
-
-
-// РЎРѕР·РґР°С‘Рј РІРµРєС‚РѕСЂ x* = (1,2,...n)'
+// Создаём вектор x* = (1,2,...n)'
 void SLAE::generateVectX(int size) {
 
 	x.resize(size);
@@ -222,7 +256,7 @@ void SLAE::generateVectX(int size) {
 }
 
 
-// Р’С‹РІРѕРґ РІРµРєС‚РѕСЂР° F РІ С„Р°Р№Р» 
+// Вывод вектора F в файл 
 void SLAE::writeFToFile(const char *fileName) {
 
 	std::ofstream fout;
@@ -234,12 +268,7 @@ void SLAE::writeFToFile(const char *fileName) {
 }
 
 
-
-
-
-
-
-
+// Вывод вектора x в файл
 void SLAE::writeXToFile(const char * fileName) {
 
 	std::ofstream fout;
@@ -251,6 +280,7 @@ void SLAE::writeXToFile(const char * fileName) {
 }
 
 
+// Вывод вектора x в поток
 void SLAE::writeXToStream(std::ofstream& fout) {
 
 	for (int i = 0; i < x.size(); ++i)
@@ -259,10 +289,7 @@ void SLAE::writeXToStream(std::ofstream& fout) {
 }
 
 
-
-
-
-// Р”РёР°РіРѕРЅР°Р»СЊРЅРѕРµ РїСЂРµРґРѕР±СѓСЃР»Р°РІР»РёРІР°РЅРёРµ M = D
+// Диагональное предобуславливание M = D
 void SLAE::decomposionD() {
 
 	di_f.clear();
@@ -272,8 +299,7 @@ void SLAE::decomposionD() {
 }
 
 
-
-// LU_sq СЂР°Р·Р»РѕР¶РµРЅРёРµ РјР°С‚СЂРёС†С‹ Рђ
+// LU_sq разложение матрицы А
 void SLAE::decomposionLUsq() {
 
 	real sum_u, sum_l, sum_d;
@@ -281,23 +307,23 @@ void SLAE::decomposionLUsq() {
 	al_f = al;
 	au_f = au;
 
-	// РРґС‘Рј РїРѕСЃС‚СЂРѕС‡РЅРѕ РІ РІРµСЂС…РЅРµРј С‚СЂРµСѓРіРѕР»СЊРЅРёРєРµ, С‡С‚Рѕ СЌРєРёРІРёРІР°Р»РµРЅС‚РЅРѕ
-	// РћР±С…РѕРґСѓ РЅРёР¶РЅРµРіРѕ С‚СЂРµСѓРіРѕР»СЊРЅРёРєР° РїРѕ СЃС‚РѕР»Р±С†Р°Рј РІРЅРёР·, РЅР°С‡РёРЅР°СЏ СЃ РїРµСЂРІРѕРіРѕ
+	// Идём построчно в верхнем треугольнике, что экививалентно
+	// Обходу нижнего треугольника по столбцам вниз, начиная с первого
 	for (int i = 0; i < n; ++i) {
 
 		int i0 = ia[i];
 		int i1 = ia[i + 1];
 
-		// Р Р°СЃСЃС‡С‘С‚ СЌР»РµРјРµРЅС‚РѕРІ РЅРёР¶РЅРµРіРѕ С‚СЂРµСѓРіРѕР»СЊРЅРёРєР°
+		// Рассчёт элементов нижнего треугольника
 		for (int k = i0; k < i1; ++k) {
 
-			int j = ja[k]; // С‚РµРєСѓС‰РёР№ j
-			int j0 = ia[j]; // i0 СЃС‚СЂРѕРєРё j
-			int j1 = ia[j + 1]; // i1 СЃС‚СЂРѕРєРё j
+			int j = ja[k]; // текущий j
+			int j0 = ia[j]; // i0 строки j
+			int j1 = ia[j + 1]; // i1 строки j
 			sum_l = 0;
 			sum_u = 0;
-			int ki = i0; // РРЅРґРµРєСЃ l_ik
-			int kj = j0; // РРЅРґРµРєСЃ u_kj
+			int ki = i0; // Индекс l_ik
+			int kj = j0; // Индекс u_kj
 
 			while (ki < k && kj < j1) {
 
@@ -307,7 +333,7 @@ void SLAE::decomposionLUsq() {
 					ki++;
 					kj++;
 				}
-				else { // РС‰РµРј СЃР»РµРґСѓСЋС‰РёРµ СЌР»РµРјРµРЅС‚С‹ i Рё j СЃС‚СЂРѕРєРё, РєРѕС‚РѕСЂС‹Рµ РјРѕР¶РµРј РїРµСЂРµРјРЅРѕР¶РёС‚СЊ
+				else { // Ищем следующие элементы i и j строки, которые можем перемножить
 					if (ja[ki] > ja[kj]) kj++;
 					else ki++;
 				}
@@ -318,7 +344,7 @@ void SLAE::decomposionLUsq() {
 		}
 
 
-		// Р Р°СЃСЃС‡С‘С‚ РґРёР°РіРѕРЅР°Р»СЊРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
+		// Рассчёт диагонального элемента
 		sum_d = 0.0;
 		for (int k = i0; k < i1; ++k)
 			sum_d += al_f[k] * au_f[k];
@@ -327,8 +353,7 @@ void SLAE::decomposionLUsq() {
 }
 
 
-
-// LL' СЂР°Р·Р»РѕР¶РµРЅРёРµ РјР°С‚СЂРёС†С‹ Рђ
+// LL' разложение матрицы А
 void SLAE::decomposionChol() {
 
 	real sum;
@@ -336,22 +361,22 @@ void SLAE::decomposionChol() {
 	al_f = al;
 	au_f = au;
 
-	// РРґС‘Рј РїРѕСЃС‚СЂРѕС‡РЅРѕ РІ РІРµСЂС…РЅРµРј С‚СЂРµСѓРіРѕР»СЊРЅРёРєРµ, С‡С‚Рѕ СЌРєРёРІРёРІР°Р»РµРЅС‚РЅРѕ
-	// РћР±С…РѕРґСѓ РЅРёР¶РЅРµРіРѕ С‚СЂРµСѓРіРѕР»СЊРЅРёРєР° РїРѕ СЃС‚РѕР»Р±С†Р°Рј РІРЅРёР·, РЅР°С‡РёРЅР°СЏ СЃ РїРµСЂРІРѕРіРѕ
+	// Идём построчно в верхнем треугольнике, что экививалентно
+	// Обходу нижнего треугольника по столбцам вниз, начиная с первого
 	for (int i = 0; i < n; ++i) {
 
 		int i0 = ia[i];
 		int i1 = ia[i + 1];
 
-		// Р Р°СЃСЃС‡С‘С‚ СЌР»РµРјРµРЅС‚РѕРІ РЅРёР¶РЅРµРіРѕ С‚СЂРµСѓРіРѕР»СЊРЅРёРєР°
+		// Рассчёт элементов нижнего треугольника
 		for (int k = i0; k < i1; ++k) {
 
-			int j = ja[k]; // С‚РµРєСѓС‰РёР№ j
-			int j0 = ia[j]; // i0 СЃС‚СЂРѕРєРё j
-			int j1 = ia[j + 1]; // i1 СЃС‚СЂРѕРєРё j
+			int j = ja[k]; // текущий j
+			int j0 = ia[j]; // i0 строки j
+			int j1 = ia[j + 1]; // i1 строки j
 			sum = 0;
-			int ki = i0; // РРЅРґРµРєСЃ l_ik
-			int kj = j0; // РРЅРґРµРєСЃ u_kj
+			int ki = i0; // Индекс l_ik
+			int kj = j0; // Индекс u_kj
 
 			while (ki < k && kj < j1) {
 
@@ -361,7 +386,7 @@ void SLAE::decomposionChol() {
 					ki++;
 					kj++;
 				}
-				else { // РС‰РµРј СЃР»РµРґСѓСЋС‰РёРµ СЌР»РµРјРµРЅС‚С‹ i Рё j СЃС‚СЂРѕРєРё, РєРѕС‚РѕСЂС‹Рµ РјРѕР¶РµРј РїРµСЂРµРјРЅРѕР¶РёС‚СЊ
+				else { // Ищем следующие элементы i и j строки, которые можем перемножить
 					if (ja[ki] > ja[kj]) kj++;
 					else ki++;
 				}
@@ -372,7 +397,7 @@ void SLAE::decomposionChol() {
 		}
 
 
-		// Р Р°СЃСЃС‡С‘С‚ РґРёР°РіРѕРЅР°Р»СЊРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
+		// Рассчёт диагонального элемента
 		sum = 0.0;
 		for (int k = i0; k < i1; ++k)
 			sum += al_f[k] * al_f[k];
@@ -381,7 +406,7 @@ void SLAE::decomposionChol() {
 }
 
 
-// РџСЂСЏРјРѕР№ С…РѕРґ    L y = F    ==>    y = L^-1 F
+// Прямой ход    L y = F    ==>    y = L^-1 F
 vec SLAE::execDirectTraversal(const vec &_F) {
 
 	vec y;
@@ -400,7 +425,7 @@ vec SLAE::execDirectTraversal(const vec &_F) {
 }
 
 
-// РћР±СЂР°С‚РЅС‹Р№ С…РѕРґ    U(sq) x = y    ==>    x = U(sq)^-1 y
+// Обратный ход    U(sq) x = y    ==>    x = U(sq)^-1 y
 vec SLAE::execReverseTraversal(const vec &_y) {
 
 	vec x, y = _y;
@@ -418,7 +443,7 @@ vec SLAE::execReverseTraversal(const vec &_y) {
 }
 
 
-// Р“РµРЅРµСЂР°С†РёСЏ РјР°С‚СЂРёС†С‹ Р“РёР»СЊР±РµСЂС‚Р°
+// Генерация матрицы Гильберта
 void SLAE::createHilbertMatrix(int size) {
 
 	clearAll();
@@ -449,9 +474,27 @@ void SLAE::createHilbertMatrix(int size) {
 }
 
 
+// Генерация матриц Гильберта
+void SLAE::createHilbertMatricies(int a, int b, int step, const string &folderNameTemplate) {
+
+	for (int i = a; i <= b; i += step) {
+		string folderName = folderNameTemplate + to_string(i);
+		createHilbertMatrix(i);
+		generateVectX(i);
+		multAAndX();
+		setE(1e-22);
+		setMaxiter(10000);
+		writeSLAEToFiles(folderName);
+	}
+}
+
+
+// Полная очистка СЛАУ
 void SLAE::clearAll() {
 
 	n = 0;
+	E = 0.0;
+	maxiter = 0;
 
 	di.clear();
 	ia.clear();
@@ -472,25 +515,23 @@ void SLAE::clearAll() {
 }
 
 
-// Р’С‹С‡РёСЃР»РµРЅРёРµ РЅРѕСЂРјС‹ РІ Р•РІРєР»РёРґРѕРІРѕРј РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРµ
+// Вычисление нормы в Евклидовом пространстве
 real SLAE::calcNormE(vec &x) {
 	return sqrt(x * x);
 }
 
 
-
-// Р Р°СЃСЃС‡С‘С‚ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕР№ РЅРµРІСЏР·РєРё
+// Рассчёт относительной невязки
 real SLAE::calcRelativeDiscrepancy() {
-	return calcNormE(r) / calcNormE(F);
-	//return (r*r);
+	//return calcNormE(r) / calcNormE(F);
+	return (r*r);
 }
 
 
-// Р›РѕРєР°Р»СЊРЅРѕ - РѕРїС‚РёРјР°Р»СЊРЅР°СЏ СЃС…РµРјР°
-void SLAE::LOS(std::ofstream& fout) {
+// Локально - оптимальная схема
+pair<int, real> SLAE::LOS() {
 
-	int i;
-	x.clear();			// Р—Р°РґР°С‘Рј РЅР°С‡Р°Р»СЊРЅРѕРµ РїСЂРёР±Р»РёР¶РµРЅРёРµ
+	x.clear();			// Задаём начальное приближение
 	x.resize(n, 0);		// x_0 = (0, 0, ...)
 	r.resize(n);
 
@@ -500,8 +541,7 @@ void SLAE::LOS(std::ofstream& fout) {
 	p = multA(z);		// p_0 = A*z_0
 
 
-	auto begin = std::chrono::steady_clock::now();
-	for (i = 0; i < maxiter && calcRelativeDiscrepancy() >= E; ++i) {
+	for (int i = 0; i < maxiter; ++i) {
 
 		real pp = (p * p);
 		real alpha = (p * r) / pp;
@@ -515,41 +555,30 @@ void SLAE::LOS(std::ofstream& fout) {
 		z = r + beta * z;
 		p = Ftmp + beta * p;
 
-		if (x == xprev)
-			break;
+		real relativeDiscrepancy = calcRelativeDiscrepancy();
+		if (x == xprev || relativeDiscrepancy < E)
+			return make_pair(i, relativeDiscrepancy);
 		xprev = x;
-		cout << alpha << "\t" << beta << endl;
 	}
-
-
-	auto end = std::chrono::steady_clock::now();
-	auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
-	fout << "LOS" << "\t" << i << "\t" << elapsed_ms.count() << "\t" << calcRelativeDiscrepancy() << endl;
 }
 
 
-// Р›РѕРєР°Р»СЊРЅРѕ - РѕРїС‚РёРјР°Р»СЊРЅР°СЏ СЃС…РµРјР° c РЅРµРїРѕР»РЅРѕР№ РґРёР°РіРѕРЅР°Р»СЊРЅРѕР№ С„Р°РєС‚РѕСЂРёР·Р°С†РёРµР№
-void SLAE::LOSfactD(std::ofstream& fout) {
+// Локально - оптимальная схема c неполной диагональной факторизацией
+pair<int, real> SLAE::LOSfactD() {
 
-	int i;
-	// Р—Р°РґР°С‘Рј РЅР°С‡Р°Р»СЊРЅРѕРµ РїСЂРёР±Р»РёР¶РµРЅРёРµ
-	x.clear();
+	x.clear();			// Задаём начальное приближение
 	x.resize(n, 0);		// x_0 = (0, 0, ...)
 	vec xprev = x;
 	decomposionD();
 
-	//vec xprev = x;
 	r = F - multA(x);	// r_0 = f - A*x_0
 	r = multD(r);
-
 	z = multD(r);		// z = U^-1 r
-
 	p = multA(z);		// p = A*z
 	p = multD(p);		// p = L^-1 A*z
 
 
-	auto begin = std::chrono::steady_clock::now();
-	for (i = 0; i < maxiter && calcRelativeDiscrepancy() >= E; ++i) {
+	for (int i = 0; i < maxiter; ++i) {
 
 		real pp = p * p;
 		real alpha = (p*r) / pp;
@@ -565,41 +594,33 @@ void SLAE::LOSfactD(std::ofstream& fout) {
 		tmp = multD(r);
 		z = tmp + beta * z;
 
-		/*if (x == xprev)
-			break;*/
+		real relativeDiscrepancy = calcRelativeDiscrepancy();
+		if (x == xprev || relativeDiscrepancy < E)
+			return make_pair(i, relativeDiscrepancy);
 		xprev = x;
 	}
-
-
-	auto end = std::chrono::steady_clock::now();
-	auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
-	fout << "LOS + diag" << "\t" << i << "\t" << elapsed_ms.count() << "\t" << calcRelativeDiscrepancy() << endl;
 }
 
 
 
 
 
-// Р›РѕРєР°Р»СЊРЅРѕ - РѕРїС‚РёРјР°Р»СЊРЅР°СЏ СЃС…РµРјР° СЃ РЅРµРїРѕР»РЅРѕР№ С„Р°РєС‚РѕСЂРёР·Р°С†РёРµР№ LU(sq)
-void SLAE::LOSfactLUsq(std::ofstream& fout) {
+// Локально - оптимальная схема с неполной факторизацией LU(sq)
+pair<int, real> SLAE::LOSfactLUsq() {
 
-	int i;
-	x.clear();						// Р—Р°РґР°С‘Рј РЅР°С‡Р°Р»СЊРЅРѕРµ РїСЂРёР±Р»РёР¶РµРЅРёРµ
+	x.clear();						// Задаём начальное приближение
 	x.resize(n, 0);					// x_0 = (0, 0, ...)
-	//vec xprev = x;
+	vec xprev = x;
 	decomposionLUsq();
 
 	r = F - multA(x);				// r_0 = f - A*x_0
 	r = execDirectTraversal(r);		// r = L^-1 (f - A*x_0)
-
 	z = execReverseTraversal(r);	// z = U^-1 r
-
 	p = multA(z);					// p = A*z
 	p = execDirectTraversal(p);		// p = L^-1 A*z
 
 
-	auto begin = std::chrono::steady_clock::now();
-	for (i = 0; i < maxiter && calcRelativeDiscrepancy() >= E; ++i) {
+	for (int i = 0; i < maxiter; ++i) {
 
 		real pp = p * p;
 		real alpha = (p*r) / pp;
@@ -615,13 +636,12 @@ void SLAE::LOSfactLUsq(std::ofstream& fout) {
 		tmp = execReverseTraversal(r);
 		z = tmp + beta * z;
 
-		/*if (x == xprev)
-			break;*/
-			//xprev = x;
+		real relativeDiscrepancy = calcRelativeDiscrepancy();
+		if (x == xprev || relativeDiscrepancy < E)
+			return make_pair(i, relativeDiscrepancy);
+		xprev = x;
 	}
-
-
-	auto end = std::chrono::steady_clock::now();
-	auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
-	fout << "LOS + LU(sq)" << "\t" << i << "\t" << elapsed_ms.count() << "\t" << calcRelativeDiscrepancy() << endl;
 }
+
+
+

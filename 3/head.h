@@ -3,14 +3,11 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <string>
 #include <iomanip>
 #include <chrono>
 
-
-using std::vector;
-using std::string;
-using std::cout;
-using std::endl;
+using namespace std;
 
 
 // float || double
@@ -18,7 +15,7 @@ typedef double real;
 typedef std::vector<real> vec;
 
 
-// РЈРјРЅРѕР¶РµРЅРёРµ РЅР° РєРѕРЅСЃС‚Р°РЅС‚Сѓ
+// Умножение на константу
 inline bool operator==(const vec& a, const vec& b) {
 #ifdef _DEBUG
 	if (a.size() != b.size())
@@ -32,7 +29,7 @@ inline bool operator==(const vec& a, const vec& b) {
 }
 
 
-// РЎР»РѕР¶РµРЅРёРµ РІРµРєС‚РѕСЂРѕРІ
+// Сложение векторов
 inline vec operator+(const vec& a, const vec& b) {
 #ifdef _DEBUG
 	if (a.size() != b.size())
@@ -45,7 +42,7 @@ inline vec operator+(const vec& a, const vec& b) {
 }
 
 
-// Р’С‹С‡РёС‚Р°РЅРёРµ РІРµРєС‚РѕСЂРѕРІ
+// Вычитание векторов
 inline vec operator-(const vec& a, const vec& b) {
 #ifdef _DEBUG
 	if (a.size() != b.size())
@@ -58,7 +55,7 @@ inline vec operator-(const vec& a, const vec& b) {
 }
 
 
-// РЈРјРЅРѕР¶РµРЅРёРµ РЅР° РєРѕРЅСЃС‚Р°РЅС‚Сѓ
+// Умножение на константу
 inline vec operator*(const vec& a, double b) {
 	vec result = a;
 	for (int i = 0; i < result.size(); i++)
@@ -67,13 +64,13 @@ inline vec operator*(const vec& a, double b) {
 }
 
 
-// РЈРјРЅРѕР¶РµРЅРёРµ РЅР° РєРѕРЅСЃС‚Р°РЅС‚Сѓ
+// Умножение на константу
 inline vec operator*(double b, const vec& a) {
 	return operator*(a, b);
 }
 
 
-// РЎРєР°Р»СЏСЂРЅРѕРµ РїСЂРѕРёР·РІРµРґРµРЅРёРµ
+// Скалярное произведение
 inline real operator*(const vec& a, const vec& b) {
 #ifdef _DEBUG
 	if (a.size() != b.size())
@@ -86,7 +83,7 @@ inline real operator*(const vec& a, const vec& b) {
 }
 
 
-// РџРѕС‚РѕРєРѕРІС‹Р№ РІС‹РІРѕРґ
+// Потоковый вывод
 inline std::ostream& operator<<(std::ostream& out, const vec& v) {
 	for (int i = 0; i < v.size() - 1; ++i)
 		out << v[i] << "\t";
