@@ -1,5 +1,6 @@
-#include "head.h"
 #include "slae.h"
+
+int quantityOfActions;
 
 
 // Ввод СЛАУ: матрицы A и вектора y
@@ -104,14 +105,14 @@ void SLAE::writeSLAEToFiles(const string &folderName) {
 	fout.close();
 
 	fout.open(folderName + "/" + "ggl.txt");
-	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1); 
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
 	for (int i = 0; i < al.size(); ++i) {
 		fout << al[i] << endl;
 	}
 	fout.close();
 
 	fout.open(folderName + "/" + "ggu.txt");
-	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1); 
+	fout << std::fixed << std::setprecision(std::numeric_limits<real>::digits10 + 1);
 	for (int i = 0; i < au.size(); ++i) {
 		fout << au[i] << endl;
 	}
@@ -217,12 +218,13 @@ void SLAE::multAAndX() {
 vec SLAE::multA(const vec&x) {
 
 	vec result(n);
-
+	quantityOfActions += n;
 	for (int i = 0; i < n; ++i) {
 
 		result[i] = di[i] * x[i];
 		int i0 = ia[i];
 		int i1 = ia[i + 1];
+		quantityOfActions += 4 * (i1 - i0);
 
 		for (int k = i0; k < i1; ++k) {
 
@@ -353,59 +355,6 @@ void SLAE::decomposionLUsq() {
 }
 
 
-// LL' разложение матрицы А
-void SLAE::decomposionChol() {
-
-	real sum;
-	di_f = di;
-	al_f = al;
-	au_f = au;
-
-	// Идём построчно в верхнем треугольнике, что экививалентно
-	// Обходу нижнего треугольника по столбцам вниз, начиная с первого
-	for (int i = 0; i < n; ++i) {
-
-		int i0 = ia[i];
-		int i1 = ia[i + 1];
-
-		// Рассчёт элементов нижнего треугольника
-		for (int k = i0; k < i1; ++k) {
-
-			int j = ja[k]; // текущий j
-			int j0 = ia[j]; // i0 строки j
-			int j1 = ia[j + 1]; // i1 строки j
-			sum = 0;
-			int ki = i0; // Индекс l_ik
-			int kj = j0; // Индекс u_kj
-
-			while (ki < k && kj < j1) {
-
-				if (ja[ki] == ja[kj]) { // l_ik * u_kj
-					sum += al_f[ki] * al_f[kj];
-
-					ki++;
-					kj++;
-				}
-				else { // Ищем следующие элементы i и j строки, которые можем перемножить
-					if (ja[ki] > ja[kj]) kj++;
-					else ki++;
-				}
-			}
-
-			al_f[k] = (al_f[k] - sum) / di_f[j];
-
-		}
-
-
-		// Рассчёт диагонального элемента
-		sum = 0.0;
-		for (int k = i0; k < i1; ++k)
-			sum += al_f[k] * al_f[k];
-		di_f[i] = sqrt(di_f[i] - sum);
-	}
-}
-
-
 // Прямой ход    L y = F    ==>    y = L^-1 F
 vec SLAE::execDirectTraversal(const vec &_F) {
 
@@ -531,6 +480,8 @@ real SLAE::calcRelativeDiscrepancy() {
 // Локально - оптимальная схема
 pair<int, real> SLAE::LOS() {
 
+	quantityOfActions = 0;
+
 	x.clear();			// Задаём начальное приближение
 	x.resize(n, 0);		// x_0 = (0, 0, ...)
 	r.resize(n);
@@ -543,6 +494,7 @@ pair<int, real> SLAE::LOS() {
 
 	for (int i = 0; i < maxiter; ++i) {
 
+		quantityOfActions += 12 * n;
 		real pp = (p * p);
 		real alpha = (p * r) / pp;
 
@@ -555,9 +507,13 @@ pair<int, real> SLAE::LOS() {
 		z = r + beta * z;
 		p = Ftmp + beta * p;
 
+
+		quantityOfActions += 2 * n;
 		real relativeDiscrepancy = calcRelativeDiscrepancy();
-		if (x == xprev || relativeDiscrepancy < E)
+		if (x == xprev || relativeDiscrepancy < E) {
+			cout << quantityOfActions << endl;
 			return make_pair(i, relativeDiscrepancy);
+		}
 		xprev = x;
 	}
 }
@@ -565,6 +521,8 @@ pair<int, real> SLAE::LOS() {
 
 // Локально - оптимальная схема c неполной диагональной факторизацией
 pair<int, real> SLAE::LOSfactD() {
+
+	quantityOfActions = 0;
 
 	x.clear();			// Задаём начальное приближение
 	x.resize(n, 0);		// x_0 = (0, 0, ...)
@@ -580,6 +538,7 @@ pair<int, real> SLAE::LOSfactD() {
 
 	for (int i = 0; i < maxiter; ++i) {
 
+		quantityOfActions += 17 * n;
 		real pp = p * p;
 		real alpha = (p*r) / pp;
 		x = x + alpha * z;
@@ -594,9 +553,13 @@ pair<int, real> SLAE::LOSfactD() {
 		tmp = multD(r);
 		z = tmp + beta * z;
 
+
+		quantityOfActions += 2 * n;
 		real relativeDiscrepancy = calcRelativeDiscrepancy();
-		if (x == xprev || relativeDiscrepancy < E)
+		if (x == xprev || relativeDiscrepancy < E) {
+			cout << quantityOfActions << endl;
 			return make_pair(i, relativeDiscrepancy);
+		}
 		xprev = x;
 	}
 }
@@ -607,6 +570,8 @@ pair<int, real> SLAE::LOSfactD() {
 
 // Локально - оптимальная схема с неполной факторизацией LU(sq)
 pair<int, real> SLAE::LOSfactLUsq() {
+
+	quantityOfActions = 0;
 
 	x.clear();						// Задаём начальное приближение
 	x.resize(n, 0);					// x_0 = (0, 0, ...)
@@ -622,6 +587,7 @@ pair<int, real> SLAE::LOSfactLUsq() {
 
 	for (int i = 0; i < maxiter; ++i) {
 
+		quantityOfActions += 18 * n;
 		real pp = p * p;
 		real alpha = (p*r) / pp;
 		x = x + alpha * z;
@@ -636,10 +602,13 @@ pair<int, real> SLAE::LOSfactLUsq() {
 		tmp = execReverseTraversal(r);
 		z = tmp + beta * z;
 
+
 		real relativeDiscrepancy = calcRelativeDiscrepancy();
-		if (x == xprev || relativeDiscrepancy < E)
+		quantityOfActions += 2 * n;
+		if (x == xprev || relativeDiscrepancy < E) {
+			cout << quantityOfActions << endl;
 			return make_pair(i, relativeDiscrepancy);
-		xprev = x;
+		}xprev = x;
 	}
 }
 

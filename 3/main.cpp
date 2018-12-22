@@ -22,7 +22,7 @@ void testSLAE(const string &folderName, bool firstNumberIsOne, bool doWriteHeade
 	iterationsCountAndDiscrapancy = slae.LOS();
 	auto end = std::chrono::steady_clock::now();
 	auto elapsed_ms = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
-	foutTable << "LOS\t" << iterationsCountAndDiscrapancy.first << "\t" << elapsed_ms.count() << "\t" << iterationsCountAndDiscrapancy.second << endl;
+	foutTable << "LOS\t" << iterationsCountAndDiscrapancy.first << "\t" << elapsed_ms.count() << "\t" << iterationsCountAndDiscrapancy.second  << endl;
 	slae.writeXToStream(foutX);
 
 
@@ -58,16 +58,23 @@ void testSLAE(const string &folderName, bool firstNumberIsOne, bool doWriteHeade
 int main() {
 
 	// Сначала нужно создать папки HilbertN, N - размерность матрицы
-	SLAE slae;
-	slae.createHilbertMatricies(4, 10, 3, "Hilbert");
+	/*SLAE slae;
+	slae.createHilbertMatricies(4, 10, 3, "Hilbert");*/
 
+	cout << "A" << endl;
 	testSLAE("A", false, false);
+	cout << endl << "B" << endl;
 	testSLAE("B", false, false);
 
+	cout << endl << "Hilbert4" << endl;
 	testSLAE("Hilbert4", false, false);
+	cout << endl << "Hilbert7" << endl;
 	testSLAE("Hilbert7", false, false);
+	cout << endl << "Hilbert10" << endl;
 	testSLAE("Hilbert10", false, false);
 
+	cout << endl << "0945" << endl;
 	testSLAE("0945", true, false);
+	cout << endl << "4545" << endl;
 	testSLAE("4545", true, false);
 }
